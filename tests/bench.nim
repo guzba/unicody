@@ -1,4 +1,4 @@
-import benchy, random, unicody, std/unicode
+import benchy, random, unicody
 
 randomize()
 
@@ -13,7 +13,9 @@ for i in 0 ..< 10:
 
 timeIt "unicody validateUtf8":
   for s in strings:
-    discard unicody.validateUtf8(s)
+    discard validateUtf8(s)
+
+# import std/unicode
 
 # timeIt "std/unicode validateUtf8":
 #   for s in strings:

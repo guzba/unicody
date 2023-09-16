@@ -9,13 +9,16 @@ const
     surrogateMax = 0xdfff'i32
     utf8Max = 0x0010ffff'i32
 
+# when defined(release):
+#   {.push checks: off.}
+
 proc isSurrogate*(rune: Rune): bool {.inline.} =
   rune.int32 >= surrogateMin and rune.int32 <= surrogateMax
 
 proc isValid*(rune: Rune): bool {.inline.} =
   not rune.isSurrogate() and rune.int32 <= utf8Max
 
-proc size*(rune: Rune): int =
+proc unsafeSize(rune: Rune): int {.inline.} =
   if rune.uint32 <= 0x7f'u32:
     result = 1
   elif rune.uint32 <= 0x7ff'u32:
@@ -24,6 +27,35 @@ proc size*(rune: Rune): int =
     result = 3
   else:
     result = 4
+
+proc size*(rune: Rune): int =
+  if not rune.isValid():
+    raise newException(CatchableError, "Invalid rune")
+
+  rune.unsafeSize()
+
+proc add*(s: var string, rune: Rune) =
+  if not rune.isValid():
+    raise newException(CatchableError, "Invalid rune")
+
+  if rune.uint32 <= 0x7f'u32:
+    s.setLen(s.len + 1)
+    s[s.high] = rune.char
+  elif rune.uint32 <= 0x7ff'u32:
+    s.setLen(s.len + 2)
+    s[s.high - 1] = ((rune.uint32 shr 6) or 0b11000000).char
+    s[s.high] = ((rune.uint32 and 0b00111111) or (0b10000000)).char
+  elif rune.uint32 <= 0xffff'u32:
+    s.setLen(s.len + 3)
+    s[s.high - 2] = ((rune.uint32 shr 12) or 0b11100000).char
+    s[s.high - 1] =((rune.uint32 shr 6 and 0b00111111) or (0b10000000)).char
+    s[s.high] = ((rune.uint32 and 0b00111111) or (0b10000000)).char
+  else:
+    s.setLen(s.len + 4)
+    s[s.high - 3] = ((rune.uint32 shr 18) or 0b11110000).char
+    s[s.high - 2] = ((rune.uint32 shr 12 and 0b00111111) or (0b10000000)).char
+    s[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or (0b10000000)).char
+    s[s.high] = ((rune.uint32 and 0b00111111) or (0b10000000)).char
 
 proc validRuneAt*(s: openarray[char], i: int): Option[Rune] =
   if i >= s.len:
@@ -99,7 +131,7 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
 
     # let rune = s.validRuneAt(i)
     # if rune.isSome:
-    #   i += rune.unsafeGet.size
+    #   i += rune.unsafeGet.unsafeSize()
     # else:
     #   return i
 
@@ -165,3 +197,6 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
 
   # Everything looks good
   return -1
+
+# when defined(release):
+#   {.pop.}

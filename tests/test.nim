@@ -1,4 +1,6 @@
-import unicody
+import unicody, std/options, random
+
+randomize()
 
 const
   goodSequences = [
@@ -57,8 +59,34 @@ for n in 0xdfff + 1 .. 0x0010ffff:
   doAssert not Rune(n).isSurrogate()
   doAssert Rune(n).isValid()
 
-for i, s in goodSequences:
+for s in goodSequences:
   doAssert validateUtf8(s) == -1
 
 for s in badSequences:
   doAssert validateUtf8(s) >= 0
+
+for s in goodSequences:
+  var
+    i: int
+    s2: string
+  while i < s.len:
+    let rune = s.validRuneAt(i)
+    s2.add(rune.get)
+    i += rune.get.size
+  doAssert s2 == s
+
+for i in 0 ..< 10:
+  var s: string
+  for i in 0 ..< 100_000:
+    let rune = Rune(rand(0x0010ffff).int32)
+    if rune.isValid():
+      s.add(rune)
+
+  var
+    i: int
+    s2: string
+  while i < s.len:
+    let rune = s.validRuneAt(i)
+    s2.add(rune.get)
+    i += rune.get.size
+  doAssert s2 == s
