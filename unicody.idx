@@ -1,0 +1,10 @@
+nimTitle	unicody	unicody.html	module src/unicody		0
+nim	replacementRune	unicody.html#replacementRune	const replacementRune		8
+nim	isSurrogate	unicody.html#isSurrogate,Rune	proc isSurrogate(rune: Rune): bool		16
+nim	isValid	unicody.html#isValid,Rune	proc isValid(rune: Rune): bool		19
+nim	unsafeSize	unicody.html#unsafeSize,Rune	proc unsafeSize(rune: Rune): int		22
+nim	size	unicody.html#size,Rune	proc size(rune: Rune): int		32
+nim	add	unicody.html#add,string,Rune	proc add(s: var string; rune: Rune)		38
+nim	validRuneAt	unicody.html#validRuneAt,openArray[char],int	proc validRuneAt(s: openArray[char]; i: int): Option[Rune]		61
+nim	validateUtf8	unicody.html#validateUtf8,openArray[char]	proc validateUtf8(s: openArray[char]): int		122
+nim	truncateUtf8	unicody.html#truncateUtf8,openArray[char],int	proc truncateUtf8(s: openArray[char]; maxBytes: int): string		202
