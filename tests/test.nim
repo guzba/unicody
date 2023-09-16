@@ -47,12 +47,15 @@ const
 
 for n in 0 .. 0xd800 - 1:
   doAssert not Rune(n).isSurrogate()
+  doAssert Rune(n).isValid()
 
 for n in 0xd800 .. 0xdfff:
   doAssert Rune(n).isSurrogate()
+  doAssert not Rune(n).isValid()
 
 for n in 0xdfff + 1 .. 0x0010ffff:
   doAssert not Rune(n).isSurrogate()
+  doAssert Rune(n).isValid()
 
 for i, s in goodSequences:
   doAssert validateUtf8(s) == -1
