@@ -92,6 +92,10 @@ for i in 0 ..< 10:
   doAssert s2 == s
 
 block:
+  let stressTest = readFile("tests/data/quickbrown.txt")
+  doAssert validateUtf8(stressTest) == -1
+
+block:
   let s = "añyóng:hÃllo;是$example"
   for i in 0 ..< 50:
     let truncated = truncateUtf8(s, i)
