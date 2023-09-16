@@ -1,6 +1,6 @@
 version     = "0.0.0"
 author      = "Ryan Oldenburg"
-description = ""
+description = "An alternative to std/unicode"
 license     = "MIT"
 
 srcDir = "src"
