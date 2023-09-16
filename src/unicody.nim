@@ -198,5 +198,27 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
   # Everything looks good
   return -1
 
+proc truncateUtf8*(s: openarray[char], maxBytes: int): string =
+  if validateUtf8(s) != -1:
+    raise newException(CatchableError, "Invalid UTF-8")
+
+  if s.len < maxBytes:
+    if s.len > 0:
+      result.setLen(s.len)
+      copyMem(result[0].addr, s[0].unsafeAddr, s.len)
+    return
+
+  var i: int
+  while i < s.len:
+    let
+      rune = s.validRuneAt(i)
+      runeSize = rune.get.size
+    if i + runeSize > maxBytes:
+      if i > 0:
+        result.setLen(i)
+        copyMem(result[0].addr, s[0].unsafeAddr, i)
+      return
+    i += runeSize
+
 # when defined(release):
 #   {.pop.}

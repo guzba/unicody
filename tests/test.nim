@@ -90,3 +90,11 @@ for i in 0 ..< 10:
     s2.add(rune.get)
     i += rune.get.size
   doAssert s2 == s
+
+block:
+  let s = "añyóng:hÃllo;是$example"
+  for i in 0 ..< 50:
+    let truncated = truncateUtf8(s, i)
+    doAssert truncated.len <= i
+    doAssert truncated == s[0 ..< truncated.len]
+    doAssert validateUtf8(truncated) == -1
