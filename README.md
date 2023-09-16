@@ -1,7 +1,5 @@
-# You can use this nim template to jump start your nim library or project.
+# Unicody
 
-This template includes:
-* MIT licence
-* src directory and a private common.nim
-* test directory
-* GitHub Actions to run the tests on GitHub
+`nimble install unicody`
+
+[API reference](https://guzba.github.io/unicody/)
