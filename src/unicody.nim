@@ -5,6 +5,7 @@ from std/unicode import Rune
 export unicode.Rune
 
 const
+    replacementRune* = Rune(0xfffd)
     surrogateMin = 0xd800'i32
     surrogateMax = 0xdfff'i32
     utf8Max = 0x0010ffff'i32
@@ -18,7 +19,7 @@ proc isSurrogate*(rune: Rune): bool {.inline.} =
 proc isValid*(rune: Rune): bool {.inline.} =
   not rune.isSurrogate() and rune.int32 <= utf8Max
 
-proc unsafeSize(rune: Rune): int {.inline.} =
+proc unsafeSize*(rune: Rune): int {.inline.} =
   if rune.uint32 <= 0x7f'u32:
     result = 1
   elif rune.uint32 <= 0x7ff'u32:
