@@ -98,3 +98,11 @@ block:
     doAssert truncated.len <= i
     doAssert truncated == s[0 ..< truncated.len]
     doAssert validateUtf8(truncated) == -1
+
+block: # README
+  doAssert truncateUtf8("🔒🔒🔒🔒🔒🔒🔒🔒🔒🔒", maxBytes = 10) == "🔒🔒"
+
+  doAssert validateUtf8("abc🔒def") == -1 # Matches std/unicode proc signature
+
+  let rune = "🔒".validRuneAt(0) # Returns Option[Rune]
+  doAssert rune.isSome # A valid fune was found starting at offset 0

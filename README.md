@@ -28,6 +28,21 @@ Unicody does not currently have an implementation of most procs in std/unicode. 
 
 Note that you may need to specify which version of some procs you want to call if you import both, eg `unicody.validateUtf8` vs just `validateUtf8`.
 
+## Examples
+
+```nim
+doAssert truncateUtf8("🔒🔒🔒🔒🔒🔒🔒🔒🔒🔒", maxBytes = 10) == "🔒🔒"
+```
+
+```nim
+doAssert validateUtf8("abc🔒def") == -1 # Matches std/unicode proc signature
+```
+
+```nim
+let rune = "🔒".validRuneAt(0) # Returns Option[Rune]
+doAssert rune.isSome # A valid rune was found starting at offset 0
+```
+
 ## Testing
 
 `nimble test`
