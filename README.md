@@ -10,7 +10,7 @@ Why create an alternative? Two primary motivating reasons:
 * Currently, std/unicode handles invalid UTF-8 incorrectly. See [1](https://github.com/nim-lang/Nim/issues/10750) and [2](https://github.com/nim-lang/Nim/issues/19333).
 * Working with UTF-8 for a web server has lead me to wanting different behavior and additional procs.
 
-I created `unicody` so these changes and additions have a place to live and so all of my  own projects to make use of this module.
+I created `unicody` so these changes and additions have a place to live and so all of my own projects can make use of this module.
 
 Unicody is written entirely in Nim so no external linking, deps, compiler flags, or whatever is necessary.
 
