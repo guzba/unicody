@@ -224,14 +224,28 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
   # Everything looks good
   return -1
 
+proc copyMem(dst: var string, src: openarray[char], len: int) =
+  when nimvm:
+    # result = s[0 ..< s.len] # seq[char]? wtf?
+    dst.setLen(len)
+    for i in 0 ..< len:
+      dst[i] = src[i]
+  else:
+    when defined(js):
+      dst.setLen(len)
+      for i in 0 ..< len:
+        dst[i] = src[i]
+    else:
+      dst.setLen(len)
+      copyMem(dst[0].addr, src[0].unsafeAddr, len)
+
 proc truncateUtf8*(s: openarray[char], maxBytes: int): string =
   if validateUtf8(s) != -1:
     raise newException(CatchableError, "Invalid UTF-8")
 
   if s.len < maxBytes:
     if s.len > 0:
-      result.setLen(s.len)
-      copyMem(result[0].addr, s[0].unsafeAddr, s.len)
+      copyMem(result, s, s.len)
     return
 
   var i: int
@@ -241,8 +255,7 @@ proc truncateUtf8*(s: openarray[char], maxBytes: int): string =
       runeSize = rune.get.size
     if i + runeSize > maxBytes:
       if i > 0:
-        result.setLen(i)
-        copyMem(result[0].addr, s[0].unsafeAddr, i)
+        copyMem(result, s, i)
       return
     i += runeSize
 
