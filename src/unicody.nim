@@ -136,7 +136,7 @@ proc runeAt*(s: openarray[char]; i: int): Rune =
   let rune = s.validRuneAt(i)
   if rune.isSome:
     return rune.get
-  raise newException(CatchableError, "Invalid rune")
+  raise newException(CatchableError, "Invalid rune at offset " & $i)
 
 proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
   var i: int
