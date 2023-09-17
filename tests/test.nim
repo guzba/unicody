@@ -110,3 +110,10 @@ block: # README
 
   let rune = "🔒".validRuneAt(0) # Returns Option[Rune]
   doAssert rune.isSome # A valid fune was found starting at offset 0
+
+block:
+  doAssert $Rune(0x20) == " "
+  doAssert $Rune(0x0394) == "Δ"
+
+block:
+  doAssert $(@[Rune(0x0394), Rune(0x20), Rune(0x0394)]) == "Δ Δ"

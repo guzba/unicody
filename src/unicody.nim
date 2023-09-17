@@ -58,6 +58,16 @@ proc add*(s: var string, rune: Rune) =
     s[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or (0b10000000)).char
     s[s.high] = ((rune.uint32 and 0b00111111) or (0b10000000)).char
 
+proc `$`*(rune: Rune): string {.inline.} =
+  result.add(rune)
+
+proc toUTF8*(rune: Rune): string {.inline.} =
+  $rune
+
+proc `$`*(runes: seq[Rune]): string =
+  for rune in runes:
+    result.add(rune)
+
 proc validRuneAt*(s: openarray[char], i: int): Option[Rune] =
   if i >= s.len:
     return
