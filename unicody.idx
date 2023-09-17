@@ -1,10 +1,16 @@
 nimTitle	unicody	unicody.html	module src/unicody		0
 nim	replacementRune	unicody.html#replacementRune	const replacementRune		8
-nim	isSurrogate	unicody.html#isSurrogate,Rune	proc isSurrogate(rune: Rune): bool		16
-nim	isValid	unicody.html#isValid,Rune	proc isValid(rune: Rune): bool		19
-nim	unsafeSize	unicody.html#unsafeSize,Rune	proc unsafeSize(rune: Rune): int		22
-nim	size	unicody.html#size,Rune	proc size(rune: Rune): int		32
-nim	add	unicody.html#add,string,Rune	proc add(s: var string; rune: Rune)		38
-nim	validRuneAt	unicody.html#validRuneAt,openArray[char],int	proc validRuneAt(s: openArray[char]; i: int): Option[Rune]		61
-nim	validateUtf8	unicody.html#validateUtf8,openArray[char]	proc validateUtf8(s: openArray[char]): int		122
-nim	truncateUtf8	unicody.html#truncateUtf8,openArray[char],int	proc truncateUtf8(s: openArray[char]; maxBytes: int): string		202
+nim	`==`	unicody.html#==,Rune,Rune	proc `==`(a, b: Rune): bool		16
+nim	isSurrogate	unicody.html#isSurrogate,Rune	proc isSurrogate(rune: Rune): bool		19
+nim	isValid	unicody.html#isValid,Rune	proc isValid(rune: Rune): bool		22
+nim	unsafeSize	unicody.html#unsafeSize,Rune	proc unsafeSize(rune: Rune): int		25
+nim	size	unicody.html#size,Rune	proc size(rune: Rune): int		35
+nim	add	unicody.html#add,string,Rune	proc add(s: var string; rune: Rune)		41
+nim	`$`	unicody.html#$,Rune	proc `$`(rune: Rune): string		64
+nim	toUTF8	unicody.html#toUTF8,Rune	proc toUTF8(rune: Rune): string		67
+nim	`$`	unicody.html#$,seq[Rune]	proc `$`(runes: seq[Rune]): string		70
+nim	validRuneAt	unicody.html#validRuneAt,openArray[char],int	proc validRuneAt(s: openArray[char]; i: int): Option[Rune]		74
+nim	runeAt	unicody.html#runeAt,openArray[char],int	proc runeAt(s: openArray[char]; i: int): Rune		135
+nim	validateUtf8	unicody.html#validateUtf8,openArray[char]	proc validateUtf8(s: openArray[char]): int		141
+nim	truncateUtf8	unicody.html#truncateUtf8,openArray[char],int	proc truncateUtf8(s: openArray[char]; maxBytes: int): string		221
+nimgrp	$	unicody.html#$-procs-all	proc		64
