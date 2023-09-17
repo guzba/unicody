@@ -5,10 +5,10 @@ from std/unicode import Rune
 export unicode.Rune
 
 const
-    replacementRune* = Rune(0xfffd)
-    surrogateMin = 0xd800'i32
-    surrogateMax = 0xdfff'i32
-    utf8Max = 0x0010ffff'i32
+  replacementRune* = Rune(0xfffd)
+  surrogateMin = 0xd800'i32
+  surrogateMax = 0xdfff'i32
+  utf8Max = 0x0010ffff'i32
 
 # when defined(release):
 #   {.push checks: off.}
