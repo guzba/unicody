@@ -13,6 +13,9 @@ const
 # when defined(release):
 #   {.push checks: off.}
 
+proc `==`*(a, b: Rune): bool {.inline.} =
+  a.int32 == b.int32
+
 proc isSurrogate*(rune: Rune): bool {.inline.} =
   rune.int32 >= surrogateMin and rune.int32 <= surrogateMax
 
@@ -128,6 +131,12 @@ proc validRuneAt*(s: openarray[char], i: int): Option[Rune] =
     if codePoint < 0xffff or codePoint > utf8Max:
       return
     return some(Rune(codePoint))
+
+proc runeAt*(s: openarray[char]; i: int): Rune =
+  let rune = s.validRuneAt(i)
+  if rune.isSome:
+    return rune.get
+  raise newException(CatchableError, "Invalid rune")
 
 proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
   var i: int

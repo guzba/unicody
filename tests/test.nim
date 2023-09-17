@@ -47,6 +47,8 @@ const
     "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
   ]
 
+doAssert Rune(0x0394) == Rune(0x0394)
+
 for n in 0 .. 0xd800 - 1:
   doAssert not Rune(n).isSurrogate()
   doAssert Rune(n).isValid()
@@ -117,3 +119,9 @@ block:
 
 block:
   doAssert $(@[Rune(0x0394), Rune(0x20), Rune(0x0394)]) == "Δ Δ"
+
+block:
+  doAssert " ".runeAt(0) == Rune(0x20)
+
+  doAssertRaises CatchableError:
+    discard "\xff".runeAt(0)
