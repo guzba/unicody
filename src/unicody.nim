@@ -141,13 +141,19 @@ proc runeAt*(s: openarray[char]; i: int): Rune =
 proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
   var i: int
   while i < s.len:
-    # Fast path: check if the next 8 bytes are ASCII
-    if i + 8 <= s.len:
-      var tmp: uint64
-      copyMem(tmp.addr, s[i].unsafeAddr, 8)
-      if (tmp and 0x8080808080808080'u64) == 0:
-        i += 8
-        continue
+    when nimvm:
+      discard
+    else:
+      when defined(js):
+        discard
+      else:
+        # Fast path: check if the next 8 bytes are ASCII
+        if i + 8 <= s.len:
+          var tmp: uint64
+          copyMem(tmp.addr, s[i].unsafeAddr, 8)
+          if (tmp and 0x8080808080808080'u64) == 0:
+            i += 8
+            continue
 
     # let rune = s.validRuneAt(i)
     # if rune.isSome:

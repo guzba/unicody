@@ -49,6 +49,9 @@ const
 
 doAssert Rune(0x0394) == Rune(0x0394)
 
+const ct = validateUtf8("0123456789")
+doAssert ct == -1
+
 for n in 0 .. 0xd800 - 1:
   doAssert not Rune(n).isSurrogate()
   doAssert Rune(n).isValid()
