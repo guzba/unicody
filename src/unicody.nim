@@ -52,7 +52,7 @@ proc add*(s: var string, rune: Rune) =
   elif rune.uint32 <= 0xffff'u32:
     s.setLen(s.len + 3)
     s[s.high - 2] = ((rune.uint32 shr 12) or 0b11100000).char
-    s[s.high - 1] =((rune.uint32 shr 6 and 0b00111111) or (0b10000000)).char
+    s[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or (0b10000000)).char
     s[s.high] = ((rune.uint32 and 0b00111111) or (0b10000000)).char
   else:
     s.setLen(s.len + 4)

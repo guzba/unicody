@@ -1,4 +1,4 @@
-import unicody, std/options, random
+import random, std/options, unicody
 
 randomize()
 

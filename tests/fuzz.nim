@@ -1,4 +1,4 @@
-import unicody, random
+import random, unicody
 
 randomize()
 
