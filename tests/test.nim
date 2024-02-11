@@ -128,3 +128,17 @@ block:
 
   doAssertRaises CatchableError:
     discard "\xff".runeAt(0)
+
+block:
+  for i in 0 ..< 32:
+    var s: string
+    s.add i.char
+    doAssert containsControlCharacter(s)
+
+block:
+  for _ in 0 ..< 100:
+    var s: string
+    for _ in 0 ..< rand(1000):
+      s.add rand(32 .. 126).char
+    s[rand(s.high)] = rand(31).char
+    doAssert containsControlCharacter(s)

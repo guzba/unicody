@@ -1,5 +1,8 @@
 import std/options
 
+when defined(amd64):
+  import nimsimd/sse2
+
 from std/unicode import Rune
 
 export unicode.Rune
@@ -10,8 +13,8 @@ const
   surrogateMax = 0xdfff'i32
   utf8Max = 0x0010ffff'i32
 
-# when defined(release):
-#   {.push checks: off.}
+when defined(release):
+  {.push checks: off.}
 
 proc `==`*(a, b: Rune): bool {.inline.} =
   a.int32 == b.int32
@@ -147,13 +150,22 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
       when defined(js):
         discard
       else:
-        # Fast path: check if the next 8 bytes are ASCII
-        if i + 8 <= s.len:
-          var tmp: uint64
-          copyMem(tmp.addr, s[i].unsafeAddr, 8)
-          if (tmp and 0x8080808080808080'u64) == 0:
-            i += 8
-            continue
+        when defined(amd64):
+          if i + 16 <= s.len:
+            let
+              tmp = mm_loadu_si128(s[i].unsafeAddr)
+              cmp = mm_and_si128(tmp, mm_set1_epi8(128))
+            if mm_movemask_epi8(cmp) == 0:
+              i += 16
+              continue
+        else:
+          # Fast path: check if the next 8 bytes are ASCII
+          if i + 8 <= s.len:
+            var tmp: uint64
+            copyMem(tmp.addr, s[i].unsafeAddr, 8)
+            if (tmp and 0x8080808080808080'u64) == 0:
+              i += 8
+              continue
 
     # let rune = s.validRuneAt(i)
     # if rune.isSome:
@@ -259,5 +271,53 @@ proc truncateUtf8*(s: openarray[char], maxBytes: int): string =
       return
     i += runeSize
 
-# when defined(release):
-#   {.pop.}
+proc containsControlCharacter*(s: openarray[char]): bool =
+  var i: int
+  while i < s.len:
+    when nimvm:
+      discard
+    else:
+      when defined(js):
+        discard
+      else:
+        when defined(amd64):
+          if i + 16 <= s.len:
+            let
+              tmp = mm_loadu_si128(s[i].unsafeAddr)
+              c = mm_cmplt_epi8(tmp, mm_set1_epi8(32))
+              e = mm_cmpeq_epi8(tmp, mm_set1_epi8(127))
+              ce = mm_or_si128(c, e)
+            if mm_movemask_epi8(ce) != 0:
+              return true
+            i += 16
+            continue
+
+        # # Fast path: check the next 8 bytes
+        # if i + 8 <= s.len:
+        #   var tmp: uint64
+        #   copyMem(tmp.addr, s[i].unsafeAddr, 8)
+        #   # 0b10000000 (0x80) for 128, there are no multi-byte characters
+        #   if (tmp and 0x8080808080808080'u64) == 0:
+        #     let
+        #       # 0b01100000 (0x60) for >= 32
+        #       a = (tmp and 0x6060606060606060'u64)
+        #       b = (a or (a shl 1))
+        #       # 0b01000000 (0x40)
+        #       c = (b and 0x4040404040404040'u64) != 0x4040404040404040'u64
+
+        #       # 0b01111111 (127) + 1 becomes 0b100000000 (0x80)
+        #       d = (tmp + 0x0101010101010101'u64)
+        #       e = (d and 0x8080808080808080'u64) != 0
+
+        #     if c or e:
+        #       return true
+        #     i += 8
+        #     continue
+
+    let c = s[i].uint8
+    if c < ' '.uint8 or c == 0x7f'u8:
+      return true
+    inc i
+
+when defined(release):
+  {.pop.}
