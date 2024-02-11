@@ -138,7 +138,8 @@ block:
 block:
   for _ in 0 ..< 100:
     var s: string
-    for _ in 0 ..< rand(1000):
+    let len = rand(1000)
+    for _ in 0 ..< len:
       s.add rand(32 .. 126).char
-    s[rand(s.high)] = rand(31).char
+    s[rand(len - 1)] = rand(31).char
     doAssert containsControlCharacter(s)
