@@ -284,13 +284,16 @@ proc containsControlCharacter*(s: openarray[char]): bool =
           if i + 16 <= s.len:
             let
               tmp = mm_loadu_si128(s[i].unsafeAddr)
+              notMultiByte = mm_cmpgt_epi8(tmp, mm_set1_epi8(-1))
               c = mm_cmplt_epi8(tmp, mm_set1_epi8(32))
               e = mm_cmpeq_epi8(tmp, mm_set1_epi8(127))
               ce = mm_or_si128(c, e)
-            if mm_movemask_epi8(ce) != 0:
+            if mm_movemask_epi8(mm_and_si128(ce, notMultiByte)) != 0:
               return true
             i += 16
             continue
+        else:
+          discard
 
         # # Fast path: check the next 8 bytes
         # if i + 8 <= s.len:
