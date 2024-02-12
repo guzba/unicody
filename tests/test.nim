@@ -138,7 +138,7 @@ block:
 block:
   for _ in 0 ..< 100:
     var s: string
-    let len = rand(1000)
+    let len = rand(1 .. 1000)
     for _ in 0 ..< len:
       s.add rand(32 .. 126).char
     s[rand(len - 1)] = rand(31).char
