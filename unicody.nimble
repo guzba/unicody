@@ -1,4 +1,4 @@
-version     = "0.1.1"
+version     = "0.1.2"
 author      = "Ryan Oldenburg"
 description = "An alternative / companion to std/unicode."
 license     = "MIT"
@@ -6,4 +6,4 @@ license     = "MIT"
 srcDir = "src"
 
 requires "nim >= 1.4.0"
-requires "nimsimd >= 1.2.6"
+requires "nimsimd >= 1.2.7"

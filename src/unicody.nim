@@ -2,6 +2,8 @@ import std/options
 
 when defined(amd64):
   import nimsimd/sse2
+elif defined(arm64):
+  import nimsimd/neon
 
 from std/unicode import Rune
 
@@ -166,6 +168,18 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
             if mm_movemask_epi8(cmp) == 0:
               i += 16
               continue
+        elif defined(arm64):
+          if i + 16 <= s.len:
+            let
+              tmp = vld1q_u8(s[i].unsafeAddr)
+              cmp = vandq_u8(tmp, vmovq_n_u8(128))
+              mask = vget_lane_u64(
+                cast[uint64x1](vorr_u8(vget_low_u8(cmp), vget_high_u8(cmp))),
+                0
+              )
+            if mask == 0:
+              i += 16
+              continue
         else:
           # Fast path: check if the next 8 bytes are ASCII
           if i + 8 <= s.len:
@@ -297,6 +311,21 @@ proc containsControlCharacter*(s: openarray[char]): bool =
               e = mm_cmpeq_epi8(tmp, mm_set1_epi8(127))
               ce = mm_or_si128(c, e)
             if mm_movemask_epi8(mm_and_si128(ce, notMultiByte)) != 0:
+              return true
+            i += 16
+            continue
+        elif defined(arm64):
+          if i + 16 <= s.len:
+            let
+              tmp = vld1q_u8(s[i].unsafeAddr)
+              c = vcltq_u8(tmp, vmovq_n_u8(32))
+              e = vceqq_u8(tmp, vmovq_n_u8(127))
+              ce = vorrq_u8(c, e)
+              mask = vget_lane_u64(
+                cast[uint64x1](vorr_u8(vget_low_u8(ce), vget_high_u8(ce))),
+                0
+              )
+            if mask != 0:
               return true
             i += 16
             continue
