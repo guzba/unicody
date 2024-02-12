@@ -354,8 +354,8 @@ proc containsControlCharacter*(s: openarray[char]): bool =
         #     i += 8
         #     continue
 
-    let c = s[i].uint8
-    if c < ' '.uint8 or c == 0x7f'u8:
+    let c = cast[uint8](s[i])
+    if c < 32'u8 or c == 127'u8:
       return true
     inc i
 
