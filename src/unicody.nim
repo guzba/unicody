@@ -9,8 +9,10 @@ export unicode.Rune
 
 const
   replacementRune* = Rune(0xfffd)
-  surrogateMin = 0xd800'i32
-  surrogateMax = 0xdfff'i32
+  highSurrogateMin* = 0xd800'i32
+  highSurrogateMax* = 0xdbff'i32
+  lowSurrogateMin* = 0xdc00'i32
+  lowSurrogateMax* = 0xdfff'i32
   utf8Max = 0x0010ffff'i32
 
 when defined(release):
@@ -19,8 +21,14 @@ when defined(release):
 proc `==`*(a, b: Rune): bool {.inline.} =
   a.int32 == b.int32
 
+proc isHighSurrogate*(rune: Rune): bool {.inline.} =
+  rune.int32 >= highSurrogateMin and rune.int32 <= highSurrogateMax
+
+proc isLowSurrogate*(rune: Rune): bool {.inline.} =
+  rune.int32 >= lowSurrogateMin and rune.int32 <= lowSurrogateMax
+
 proc isSurrogate*(rune: Rune): bool {.inline.} =
-  rune.int32 >= surrogateMin and rune.int32 <= surrogateMax
+  rune.isHighSurrogate() or rune.isLowSurrogate()
 
 proc isValid*(rune: Rune): bool {.inline.} =
   not rune.isSurrogate() and rune.int32 <= utf8Max
