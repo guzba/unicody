@@ -36,6 +36,8 @@ proc isValid*(rune: Rune): bool {.inline.} =
   not rune.isSurrogate() and rune.int32 <= utf8Max
 
 proc unsafeSize*(rune: Rune): int {.inline.} =
+  ## Returns the number of bytes the rune takes without checking
+  ## if the rune is valid.
   if rune.uint32 <= 0x7f'u32:
     result = 1
   elif rune.uint32 <= 0x7ff'u32:
@@ -46,15 +48,13 @@ proc unsafeSize*(rune: Rune): int {.inline.} =
     result = 4
 
 proc size*(rune: Rune): int =
+  ## Returns the number of bytes the rune takes.
   if not rune.isValid():
     raise newException(CatchableError, "Invalid rune")
-
   rune.unsafeSize()
 
-proc add*(s: var string, rune: Rune) =
-  if not rune.isValid():
-    raise newException(CatchableError, "Invalid rune")
-
+proc unsafeAdd*(s: var string, rune: Rune) =
+  ## Adds the rune to the string without checking if the rune is valid.
   if rune.uint32 <= 0x7f'u32:
     s.setLen(s.len + 1)
     s[s.high] = rune.char
@@ -73,6 +73,12 @@ proc add*(s: var string, rune: Rune) =
     s[s.high - 2] = ((rune.uint32 shr 12 and 0b00111111) or (0b10000000)).char
     s[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or (0b10000000)).char
     s[s.high] = ((rune.uint32 and 0b00111111) or (0b10000000)).char
+
+proc add*(s: var string, rune: Rune) =
+  ## Adds the rune to the string.
+  if not rune.isValid():
+    raise newException(CatchableError, "Invalid rune")
+  s.add(rune)
 
 proc `$`*(rune: Rune): string {.inline.} =
   result.add(rune)
