@@ -78,7 +78,7 @@ proc add*(s: var string, rune: Rune) =
   ## Adds the rune to the string.
   if not rune.isValid():
     raise newException(CatchableError, "Invalid rune")
-  s.add(rune)
+  s.unsafeAdd(rune)
 
 proc `$`*(rune: Rune): string {.inline.} =
   result.add(rune)
