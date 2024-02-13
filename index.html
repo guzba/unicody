@@ -113,6 +113,10 @@
   <li><a class="reference" href="#truncateUtf8%2CopenArray%5Bchar%5D%2Cint" title="truncateUtf8(s: openArray[char]; maxBytes: int): string">truncateUtf8(s: openArray[char]; maxBytes: int): string</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">unsafeAdd
+  <li><a class="reference" href="#unsafeAdd%2Cstring%2CRune" title="unsafeAdd(s: var string; rune: Rune)">unsafeAdd(s: var string; rune: Rune)</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">unsafeSize
   <li><a class="reference" href="#unsafeSize%2CRune" title="unsafeSize(rune: Rune): int">unsafeSize(rune: Rune): int</a></li>
 
@@ -206,8 +210,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L77" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L77" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L83" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L83" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -217,8 +221,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L83" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L83" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L89" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L89" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -243,9 +247,9 @@
                                       <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L54" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L54" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Adds the rune to the string.
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L77" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L77" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -258,8 +262,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L296" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L296" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L302" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L302" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -326,8 +330,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L148" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L148" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L154" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L154" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -338,9 +342,9 @@
   <dt><pre><span class="Keyword">proc</span> <a href="#size%2CRune"><span class="Identifier">size</span></a><span class="Other">(</span><span class="Identifier">rune</span><span class="Other">:</span> <span class="Identifier">Rune</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">CatchableError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L48" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L48" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Returns the number of bytes the rune takes.
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L50" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L50" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -353,8 +357,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L80" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L80" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L86" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L86" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -367,8 +371,21 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L276" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L276" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L282" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L282" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+
+</div>
+<div id="unsafeAdd-procs-all">
+  <div id="unsafeAdd,string,Rune">
+  <dt><pre><span class="Keyword">proc</span> <a href="#unsafeAdd%2Cstring%2CRune"><span class="Identifier">unsafeAdd</span></a><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">rune</span><span class="Other">:</span> <span class="Identifier">Rune</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Adds the rune to the string without checking if the rune is valid.
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L56" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L56" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -379,7 +396,7 @@
   <dt><pre><span class="Keyword">proc</span> <a href="#unsafeSize%2CRune"><span class="Identifier">unsafeSize</span></a><span class="Other">(</span><span class="Identifier">rune</span><span class="Other">:</span> <span class="Identifier">Rune</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    
+    Returns the number of bytes the rune takes without checking if the rune is valid.
     <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L38" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
 <a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L38" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
@@ -393,8 +410,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L154" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L154" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L160" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L160" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -407,8 +424,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L87" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L87" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L93" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L93" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -424,7 +441,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-12 20:21:45 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-13 21:28:20 UTC</small>
       </div>
     </div>
   </div>
