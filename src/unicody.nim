@@ -168,10 +168,8 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
       else:
         when defined(amd64):
           if i + 16 <= s.len:
-            let
-              tmp = mm_loadu_si128(s[i].unsafeAddr)
-              cmp = mm_and_si128(tmp, mm_set1_epi8(128))
-            if mm_movemask_epi8(cmp) == 0:
+            let tmp = mm_loadu_si128(s[i].unsafeAddr)
+            if mm_movemask_epi8(tmp) == 0:
               i += 16
               continue
         elif defined(arm64):
