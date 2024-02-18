@@ -104,12 +104,12 @@ proc validRuneAt*(s: openarray[char], i: int): Option[Rune] =
     let c1 = s[i + 1].uint8
     if (c1 and 0b11000000) != 0b10000000:
       return
-    let codePoint =
+    let codepoint =
       ((c0.int32 and 0b00011111) shl 6) or
       (c1.int32 and 0b00111111)
-    if codePoint < 0x80:
+    if codepoint < 0x80:
       return
-    return some(Rune(codePoint))
+    return some(Rune(codepoint))
 
   if (c0 and 0b11110000) == 0b11100000:
     if i + 2 >= s.len:
@@ -121,13 +121,13 @@ proc validRuneAt*(s: openarray[char], i: int): Option[Rune] =
       return
     if (c2 and 0b11000000) != 0b10000000:
       return
-    let codePoint =
+    let codepoint =
       ((c0.int32 and 0b00001111) shl 12) or
       ((c1.int32 and 0b00111111) shl 6) or
       (c2.int32 and 0b00111111)
-    if codePoint < 0x800 or Rune(codePoint).isSurrogate():
+    if codepoint < 0x800 or Rune(codepoint).isSurrogate():
       return
-    return some(Rune(codePoint))
+    return some(Rune(codepoint))
 
   if (c0 and 0b11111000) == 0b11110000:
     if i + 3 >= s.len:
@@ -142,19 +142,19 @@ proc validRuneAt*(s: openarray[char], i: int): Option[Rune] =
       return
     if (c3 and 0b11000000) != 0b10000000:
       return
-    let codePoint =
+    let codepoint =
       ((c0.int32 and 0b00000111) shl 18) or
       ((c1.int32 and 0b00111111) shl 12) or
       ((c2.int32 and 0b00111111) shl 6) or
       (c3.int32 and 0b00111111)
-    if codePoint < 0xffff or codePoint > utf8Max:
+    if codepoint < 0xffff or codepoint > utf8Max:
       return
-    return some(Rune(codePoint))
+    return some(Rune(codepoint))
 
 proc runeAt*(s: openarray[char]; i: int): Rune =
   let rune = s.validRuneAt(i)
   if rune.isSome:
-    return rune.get
+    return rune.unsafeGet
   raise newException(CatchableError, "Invalid rune at offset " & $i)
 
 proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
@@ -212,10 +212,10 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
       let c1 = s[i + 1].uint8
       if (c1 and 0b11000000) != 0b10000000:
         return i + 1
-      let codePoint =
+      let codepoint =
         ((c0.int32 and 0b00011111) shl 6) or
         (c1.int32 and 0b00111111)
-      if codePoint < 0x80:
+      if codepoint < 0x80:
         return i
       i += 2
     elif (c0 and 0b11110000) == 0b11100000:
@@ -228,11 +228,11 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
         return i + 1
       if (c2 and 0b11000000) != 0b10000000:
         return i + 2
-      let codePoint =
+      let codepoint =
         ((c0.int32 and 0b00001111) shl 12) or
         ((c1.int32 and 0b00111111) shl 6) or
         (c2.int32 and 0b00111111)
-      if codePoint < 0x800 or Rune(codePoint).isSurrogate():
+      if codepoint < 0x800 or Rune(codepoint).isSurrogate():
         return i
       i += 3
     elif (c0 and 0b11111000) == 0b11110000:
@@ -248,12 +248,12 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
         return i + 2
       if (c3 and 0b11000000) != 0b10000000:
         return i + 3
-      let codePoint =
+      let codepoint =
         ((c0.int32 and 0b00000111) shl 18) or
         ((c1.int32 and 0b00111111) shl 12) or
         ((c2.int32 and 0b00111111) shl 6) or
         (c3.int32 and 0b00111111)
-      if codePoint < 0xffff or codePoint > utf8Max:
+      if codepoint < 0xffff or codepoint > utf8Max:
         return i
       i += 4
     else:
@@ -289,7 +289,7 @@ proc truncateUtf8*(s: openarray[char], maxBytes: int): string =
   var i: int
   while i < s.len:
     let
-      rune = s.validRuneAt(i)
+      rune = s.validRuneAt(i) # Already validated above
       runeSize = rune.get.size
     if i + runeSize > maxBytes:
       if i > 0:
@@ -333,8 +333,6 @@ proc containsControlCharacter*(s: openarray[char]): bool =
               return true
             i += 16
             continue
-        else:
-          discard
 
         # # Fast path: check the next 8 bytes
         # if i + 8 <= s.len:
