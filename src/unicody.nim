@@ -81,17 +81,17 @@ proc unsafeAdd*(s: var string, rune: Rune) =
   elif rune.uint32 <= 0x7ff'u32:
     s.setLen(s.len + 2)
     s[s.high - 1] = ((rune.uint32 shr 6) or 0b11000000).char
-    s[s.high] = ((rune.uint32 and 0b00111111) or (0b10000000)).char
+    s[s.high] = ((rune.uint32 and 0b00111111) or 0b10000000).char
   elif rune.uint32 <= 0xffff'u32:
     s.setLen(s.len + 3)
     s[s.high - 2] = ((rune.uint32 shr 12) or 0b11100000).char
-    s[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or (0b10000000)).char
-    s[s.high] = ((rune.uint32 and 0b00111111) or (0b10000000)).char
+    s[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or 0b10000000).char
+    s[s.high] = ((rune.uint32 and 0b00111111) or 0b10000000).char
   else:
     s.setLen(s.len + 4)
     s[s.high - 3] = ((rune.uint32 shr 18) or 0b11110000).char
-    s[s.high - 2] = ((rune.uint32 shr 12 and 0b00111111) or (0b10000000)).char
-    s[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or (0b10000000)).char
+    s[s.high - 2] = ((rune.uint32 shr 12 and 0b00111111) or 0b10000000).char
+    s[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or 0b10000000).char
     s[s.high] = ((rune.uint32 and 0b00111111) or (0b10000000)).char
 
 proc add*(s: var string, rune: Rune) =
