@@ -48,9 +48,9 @@ block:
     for s in strings:
       doAssert not containsControlCharacter(s)
 
-  timeIt "unicody findControlCharacter -1":
-    for s in strings:
-      doAssert findControlCharacter(s) == -1
+  # timeIt "unicody findControlCharacter -1":
+  #   for s in strings:
+  #     doAssert findControlCharacter(s) == -1
 
 block:
   var strings: seq[string]
@@ -66,6 +66,6 @@ block:
     for s in strings:
       doAssert containsControlCharacter(s)
 
-  timeIt "unicody findControlCharacter != -1":
-    for s in strings:
-      doAssert findControlCharacter(s) != -1
+  # timeIt "unicody findControlCharacter != -1":
+  #   for s in strings:
+  #     doAssert findControlCharacter(s) != -1

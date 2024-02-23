@@ -9,25 +9,25 @@ from std/unicode import Rune
 
 export unicode.Rune
 
-when defined(amd64):
-  {.compile: "amd64.s".}
+# when defined(amd64):
+#   {.compile: "amd64.s".}
 
-  when defined(windows):
-    {.push importc, stdcall.}
-    proc validateUtf8_windows*(p: pointer, len: int): int
-    proc findControlCharacter_windows*(p: pointer, len: int): int
-    {.pop.}
+#   when defined(windows):
+#     {.push importc, stdcall.}
+#     proc validateUtf8_windows*(p: pointer, len: int): int
+#     proc findControlCharacter_windows*(p: pointer, len: int): int
+#     {.pop.}
 
-    when defined(nimHasQuirky):
-      {.push quirky: on.}
+#     when defined(nimHasQuirky):
+#       {.push quirky: on.}
 
-    proc findControlCharacter*(s: openarray[char]): int {.inline, raises: [].} =
-      if s.len <= 0:
-        return -1
-      findControlCharacter_windows(s[0].addr, s.len)
+#     proc findControlCharacter*(s: openarray[char]): int {.inline, raises: [].} =
+#       if s.len <= 0:
+#         return -1
+#       findControlCharacter_windows(s[0].addr, s.len)
 
-    when defined(nimHasQuirky):
-      {.pop.}
+#     when defined(nimHasQuirky):
+#       {.pop.}
 
 const
   replacementRune* = Rune(0xfffd)
@@ -330,12 +330,10 @@ proc containsControlCharacter*(s: openarray[char]): bool =
           let
             tmp = mm_loadu_si128(s[i].unsafeAddr)
             multiByte = mm_cmpgt_epi8(mm_setzero_si128(), tmp)
-            ones = mm_cmpeq_epi8(mm_setzero_si128(), mm_setzero_si128())
-            notMultiByte = mm_andnot_si128(multibyte, ones)
             c = mm_cmplt_epi8(tmp, mm_set1_epi8(32))
             e = mm_cmpeq_epi8(tmp, mm_set1_epi8(127))
-            ce = mm_or_si128(c, e)
-          if mm_movemask_epi8(mm_and_si128(ce, notMultiByte)) != 0:
+            ceMasked = mm_andnot_si128(multibyte, mm_or_si128(c, e))
+          if mm_movemask_epi8(ceMasked) != 0:
             return true
           i += 16
       elif defined(arm64):

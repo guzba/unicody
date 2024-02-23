@@ -14,7 +14,7 @@ for i in 0 ..< 100_000:
         newValue = rand(0 .. 31).char
       s[pos] = newValue
       doAssert containsControlCharacter(s)
-      doAssert findControlCharacter_windows(s.cstring, s.len) == pos
+      # doAssert findControlCharacter_windows(s.cstring, s.len) == pos
       s[pos] = oldValue
     block:
       let
@@ -23,7 +23,7 @@ for i in 0 ..< 100_000:
         newValue = 127.char
       s[pos] = newValue
       doAssert containsControlCharacter(s)
-      doAssert findControlCharacter_windows(s.cstring, s.len) == pos
+      # doAssert findControlCharacter_windows(s.cstring, s.len) == pos
       s[pos] = oldValue
     block:
       let
@@ -32,7 +32,7 @@ for i in 0 ..< 100_000:
         newValue = rand(128 .. 255).char
       s[pos] = newValue
       doAssert not containsControlCharacter(s)
-      doAssert findControlCharacter_windows(s.cstring, s.len) == -1
+      # doAssert findControlCharacter_windows(s.cstring, s.len) == -1
       s[pos] = oldValue
 
 for i in 0 ..< 100_000:
