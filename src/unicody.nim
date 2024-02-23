@@ -35,7 +35,7 @@ const
   highSurrogateMax* = 0xdbff'i32
   lowSurrogateMin* = 0xdc00'i32
   lowSurrogateMax* = 0xdfff'i32
-  utf8Max = 0x0010ffff'i32
+  utf8Max* = 0x0010ffff'i32
 
 when defined(release):
   {.push checks: off.}
@@ -73,26 +73,66 @@ proc size*(rune: Rune): int =
     raise newException(CatchableError, "Invalid rune")
   rune.unsafeSize()
 
+when defined(nimHasQuirky):
+  proc unsafeAdd*(s: var string, rune: Rune) {.quirky.}
+else:
+  proc unsafeAdd*(s: var string, rune: Rune)
+
 proc unsafeAdd*(s: var string, rune: Rune) =
   ## Adds the rune to the string without checking if the rune is valid.
-  if rune.uint32 <= 0x7f'u32:
-    s.setLen(s.len + 1)
-    s[s.high] = rune.char
-  elif rune.uint32 <= 0x7ff'u32:
-    s.setLen(s.len + 2)
-    s[s.high - 1] = ((rune.uint32 shr 6) or 0b11000000).char
-    s[s.high] = ((rune.uint32 and 0b00111111) or 0b10000000).char
-  elif rune.uint32 <= 0xffff'u32:
-    s.setLen(s.len + 3)
-    s[s.high - 2] = ((rune.uint32 shr 12) or 0b11100000).char
-    s[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or 0b10000000).char
-    s[s.high] = ((rune.uint32 and 0b00111111) or 0b10000000).char
+
+  template slow =
+    if rune.uint32 <= 0x7f'u32:
+      s.add rune.char
+    elif rune.uint32 <= 0x7ff'u32:
+      s.add ((rune.uint32 shr 6) or 0b11000000).char
+      s.add ((rune.uint32 and 0b00111111) or 0b10000000).char
+    elif rune.uint32 <= 0xffff'u32:
+      s.add ((rune.uint32 shr 12) or 0b11100000).char
+      s.add ((rune.uint32 shr 6 and 0b00111111) or 0b10000000).char
+      s.add ((rune.uint32 and 0b00111111) or 0b10000000).char
+    else:
+      s.add ((rune.uint32 shr 18) or 0b11110000).char
+      s.add ((rune.uint32 shr 12 and 0b00111111) or 0b10000000).char
+      s.add ((rune.uint32 shr 6 and 0b00111111) or 0b10000000).char
+      s.add ((rune.uint32 and 0b00111111) or (0b10000000)).char
+
+  template fast =
+    if rune.uint32 <= 0x7f'u32:
+      s.add rune.char
+    elif rune.uint32 <= 0x7ff'u32:
+      s.setLen(s.len + 2)
+      let p = cast[ptr UncheckedArray[char]](s.cstring)
+      p[s.high - 1] = ((rune.uint32 shr 6) or 0b11000000).char
+      p[s.high] = ((rune.uint32 and 0b00111111) or 0b10000000).char
+    elif rune.uint32 <= 0xffff'u32:
+      s.setLen(s.len + 3)
+      let p = cast[ptr UncheckedArray[char]](s.cstring)
+      p[s.high - 2] = ((rune.uint32 shr 12) or 0b11100000).char
+      p[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or 0b10000000).char
+      p[s.high] = ((rune.uint32 and 0b00111111) or 0b10000000).char
+    else:
+      s.setLen(s.len + 4)
+      let p = cast[ptr UncheckedArray[char]](s.cstring)
+      var
+        a = ((rune.uint32 shr 18) or 0b11110000)
+        b = ((rune.uint32 shr 12 and 0b00111111) or 0b10000000) shl 8
+        c = ((rune.uint32 shr 6 and 0b00111111) or 0b10000000) shl 16
+        d = ((rune.uint32 and 0b00111111) or (0b10000000)) shl 24
+        tmp = a or b or c or d
+      copyMem(p[s.high - 3].addr, tmp.addr, 4)
+      # p[s.high - 3] = ((rune.uint32 shr 18) or 0b11110000).char
+      # p[s.high - 2] = ((rune.uint32 shr 12 and 0b00111111) or 0b10000000).char
+      # p[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or 0b10000000).char
+      # p[s.high] = ((rune.uint32 and 0b00111111) or (0b10000000)).char
+
+  when nimvm:
+    slow()
   else:
-    s.setLen(s.len + 4)
-    s[s.high - 3] = ((rune.uint32 shr 18) or 0b11110000).char
-    s[s.high - 2] = ((rune.uint32 shr 12 and 0b00111111) or 0b10000000).char
-    s[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or 0b10000000).char
-    s[s.high] = ((rune.uint32 and 0b00111111) or (0b10000000)).char
+    when defined(js):
+      slow()
+    else:
+      fast()
 
 proc add*(s: var string, rune: Rune) =
   ## Adds the rune to the string.

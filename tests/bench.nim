@@ -3,6 +3,29 @@ import benchy, random, unicody
 randomize()
 
 block:
+  var runes = newSeq[Rune](100_000)
+  for i in 0 ..< runes.len:
+    runes[i] = Rune(rand(0'i32 .. utf8Max))
+
+  var s: string
+  timeIt "unicody unsafeAdd rune":
+    for rune in runes:
+      s.unsafeAdd rune
+    s.setLen(0)
+
+  var strings: seq[string]
+  for i in 0 ..< 10:
+    var s: string
+    for i in 0 ..< 1_000_000:
+      let c = rand(127).char
+      s.add(c)
+    strings.add(s)
+
+  timeIt "unicody validateUtf8":
+    for s in strings:
+      doAssert validateUtf8(s) == -1
+
+block:
   var strings: seq[string]
   for i in 0 ..< 10:
     var s: string
