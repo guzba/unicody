@@ -9,6 +9,26 @@ from std/unicode import Rune
 
 export unicode.Rune
 
+when defined(amd64):
+  {.compile: "amd64.s".}
+
+  when defined(windows):
+    {.push importc, stdcall.}
+    proc validateUtf8_windows*(p: pointer, len: int): int
+    proc findControlCharacter_windows*(p: pointer, len: int): int
+    {.pop.}
+
+    when defined(nimHasQuirky):
+      {.push quirky: on.}
+
+    proc findControlCharacter*(s: openarray[char]): int {.inline, raises: [].} =
+      if s.len <= 0:
+        return -1
+      findControlCharacter_windows(s[0].addr, s.len)
+
+    when defined(nimHasQuirky):
+      {.pop.}
+
 const
   replacementRune* = Rune(0xfffd)
   highSurrogateMin* = 0xd800'i32
@@ -20,32 +40,32 @@ const
 when defined(release):
   {.push checks: off.}
 
-proc `==`*(a, b: Rune): bool {.inline.} =
+template `==`*(a, b: Rune): bool =
   a.int32 == b.int32
 
-proc isHighSurrogate*(rune: Rune): bool {.inline.} =
+template isHighSurrogate*(rune: Rune): bool =
   rune.int32 >= highSurrogateMin and rune.int32 <= highSurrogateMax
 
-proc isLowSurrogate*(rune: Rune): bool {.inline.} =
+template isLowSurrogate*(rune: Rune): bool =
   rune.int32 >= lowSurrogateMin and rune.int32 <= lowSurrogateMax
 
-proc isSurrogate*(rune: Rune): bool {.inline.} =
+template isSurrogate*(rune: Rune): bool =
   rune.isHighSurrogate() or rune.isLowSurrogate()
 
-proc isValid*(rune: Rune): bool {.inline.} =
+template isValid*(rune: Rune): bool =
   not rune.isSurrogate() and rune.int32 <= utf8Max
 
-proc unsafeSize*(rune: Rune): int {.inline.} =
+template unsafeSize*(rune: Rune): int =
   ## Returns the number of bytes the rune takes without checking
   ## if the rune is valid.
   if rune.uint32 <= 0x7f'u32:
-    result = 1
+    1
   elif rune.uint32 <= 0x7ff'u32:
-    result = 2
+    2
   elif rune.uint32 <= 0xffff'u32:
-    result = 3
+    3
   else:
-    result = 4
+    4
 
 proc size*(rune: Rune): int =
   ## Returns the number of bytes the rune takes.
@@ -299,67 +319,67 @@ proc truncateUtf8*(s: openarray[char], maxBytes: int): string =
 
 proc containsControlCharacter*(s: openarray[char]): bool =
   var i: int
-  while i < s.len:
-    when nimvm:
+  when nimvm:
+    discard
+  else:
+    when defined(js):
       discard
     else:
-      when defined(js):
-        discard
-      else:
-        when defined(amd64):
-          if i + 16 <= s.len:
-            let
-              tmp = mm_loadu_si128(s[i].unsafeAddr)
-              notMultiByte = mm_cmpgt_epi8(tmp, mm_set1_epi8(-1))
-              c = mm_cmplt_epi8(tmp, mm_set1_epi8(32))
-              e = mm_cmpeq_epi8(tmp, mm_set1_epi8(127))
-              ce = mm_or_si128(c, e)
-            if mm_movemask_epi8(mm_and_si128(ce, notMultiByte)) != 0:
-              return true
-            i += 16
-            continue
-        elif defined(arm64):
-          if i + 16 <= s.len:
-            let
-              tmp = vld1q_u8(s[i].unsafeAddr)
-              c = vcltq_u8(tmp, vmovq_n_u8(32))
-              e = vceqq_u8(tmp, vmovq_n_u8(127))
-              ce = vorrq_u8(c, e)
-              mask = vget_lane_u64(
-                cast[uint64x1](vorr_u8(vget_low_u8(ce), vget_high_u8(ce))),
-                0
-              )
-            if mask != 0:
-              return true
-            i += 16
-            continue
+      when defined(amd64):
+        while i + 16 <= s.len:
+          let
+            tmp = mm_loadu_si128(s[i].unsafeAddr)
+            multiByte = mm_cmpgt_epi8(mm_setzero_si128(), tmp)
+            ones = mm_cmpeq_epi8(mm_setzero_si128(), mm_setzero_si128())
+            notMultiByte = mm_andnot_si128(multibyte, ones)
+            c = mm_cmplt_epi8(tmp, mm_set1_epi8(32))
+            e = mm_cmpeq_epi8(tmp, mm_set1_epi8(127))
+            ce = mm_or_si128(c, e)
+          if mm_movemask_epi8(mm_and_si128(ce, notMultiByte)) != 0:
+            return true
+          i += 16
+      elif defined(arm64):
+        while i + 16 <= s.len:
+          let
+            tmp = vld1q_u8(s[i].unsafeAddr)
+            c = vcltq_u8(tmp, vmovq_n_u8(32))
+            e = vceqq_u8(tmp, vmovq_n_u8(127))
+            ce = vorrq_u8(c, e)
+            mask = vget_lane_u64(
+              cast[uint64x1](vorr_u8(vget_low_u8(ce), vget_high_u8(ce))),
+              0
+            )
+          if mask != 0:
+            return true
+          i += 16
 
-        # # Fast path: check the next 8 bytes
-        # if i + 8 <= s.len:
-        #   var tmp: uint64
-        #   copyMem(tmp.addr, s[i].unsafeAddr, 8)
-        #   # 0b10000000 (0x80) for 128, there are no multi-byte characters
-        #   if (tmp and 0x8080808080808080'u64) == 0:
-        #     let
-        #       # 0b01100000 (0x60) for >= 32
-        #       a = (tmp and 0x6060606060606060'u64)
-        #       b = (a or (a shl 1))
-        #       # 0b01000000 (0x40)
-        #       c = (b and 0x4040404040404040'u64) != 0x4040404040404040'u64
-
-        #       # 0b01111111 (127) + 1 becomes 0b100000000 (0x80)
-        #       d = (tmp + 0x0101010101010101'u64)
-        #       e = (d and 0x8080808080808080'u64) != 0
-
-        #     if c or e:
-        #       return true
-        #     i += 8
-        #     continue
-
+  while i < s.len:
     let c = cast[uint8](s[i])
     if c < 32'u8 or c == 127'u8:
       return true
     inc i
+
+    # # Fast path: check the next 8 bytes
+    # if i + 8 <= s.len:
+    #   var tmp: uint64
+    #   copyMem(tmp.addr, s[i].unsafeAddr, 8)
+    #   # 0b10000000 (0x80) for 128, there are no multi-byte characters
+    #   if (tmp and 0x8080808080808080'u64) == 0:
+    #     let
+    #       # 0b01100000 (0x60) for >= 32
+    #       a = (tmp and 0x6060606060606060'u64)
+    #       b = (a or (a shl 1))
+    #       # 0b01000000 (0x40)
+    #       c = (b and 0x4040404040404040'u64) != 0x4040404040404040'u64
+
+    #       # 0b01111111 (127) + 1 becomes 0b100000000 (0x80)
+    #       d = (tmp + 0x0101010101010101'u64)
+    #       e = (d and 0x8080808080808080'u64) != 0
+
+    #     if c or e:
+    #       return true
+    #     i += 8
+    #     continue
 
 when defined(release):
   {.pop.}

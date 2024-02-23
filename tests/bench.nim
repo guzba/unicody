@@ -44,9 +44,13 @@ block:
       s.add(c)
     strings.add(s)
 
-  timeIt "unicody containsControlCharacter":
+  timeIt "unicody containsControlCharacter false":
     for s in strings:
       doAssert not containsControlCharacter(s)
+
+  timeIt "unicody findControlCharacter -1":
+    for s in strings:
+      doAssert findControlCharacter(s) == -1
 
 block:
   var strings: seq[string]
@@ -58,6 +62,10 @@ block:
     s[rand(s.high)] = rand(0 .. 31).char
     strings.add(s)
 
-  timeIt "unicody containsControlCharacter 2":
+  timeIt "unicody containsControlCharacter true":
     for s in strings:
       doAssert containsControlCharacter(s)
+
+  timeIt "unicody findControlCharacter != -1":
+    for s in strings:
+      doAssert findControlCharacter(s) != -1
