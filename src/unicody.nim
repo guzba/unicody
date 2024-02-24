@@ -7,7 +7,7 @@ elif defined(arm64):
 
 from std/unicode import Rune
 
-export unicode.Rune
+export unicode.Rune, options
 
 # when defined(amd64):
 #   {.compile: "amd64.s".}
@@ -151,65 +151,69 @@ proc `$`*(runes: seq[Rune]): string =
     result.add(rune)
 
 proc validRuneAt*(s: openarray[char], i: int): Option[Rune] =
-  if i >= s.len:
+  let readableBytes = s.len - i
+  if readableBytes <= 0:
     return
 
   let c0 = s[i].uint8
   if (c0 and 0b10000000) == 0:
-    return some(c0.Rune)
+    return some(Rune(c0))
 
-  if (c0 and 0b11100000) == 0b11000000:
-    if i + 1 >= s.len:
-      return
+  # Looks multi-byte
+
+  if readableBytes == 1:
+    return
+
+  elif readableBytes >= 4:
+    var tmp: uint32
+    copyMem(tmp.addr, s[i].addr, 4)
+    let
+      b = (tmp and 0b1100000011100000'u32)
+      c = (tmp and 0b110000001100000011110000'u32)
+      d = (tmp and 0b11000000110000001100000011111000'u32)
+    if b == 0b1000000011000000'u32:
+      let codepoint =
+        ((c0.int32 and 0b00011111) shl 6) or
+        (s[i + 1].int32 and 0b00111111)
+      if codepoint >= 0x80:
+        return some(Rune(codepoint))
+    elif c == 0b100000001000000011100000'u32:
+      let codepoint =
+        ((c0.int32 and 0b00001111) shl 12) or
+        ((s[i + 1].int32 and 0b00111111) shl 6) or
+        (s[i + 2].int32 and 0b00111111)
+      if codepoint >= 0x800 and not Rune(codepoint).isSurrogate():
+        return some(Rune(codepoint))
+    elif d == 0b10000000100000001000000011110000'u32:
+      let codepoint =
+        ((c0.int32 and 0b00000111) shl 18) or
+        ((s[i + 1].int32 and 0b00111111) shl 12) or
+        ((s[i + 2].int32 and 0b00111111) shl 6) or
+        (s[i + 3].int32 and 0b00111111)
+      if codepoint >= 0xffff and codepoint <= utf8Max:
+        return some(Rune(codepoint))
+
+  else: # 2 or 3 readable bytes
     let c1 = s[i + 1].uint8
     if (c1 and 0b11000000) != 0b10000000:
       return
-    let codepoint =
-      ((c0.int32 and 0b00011111) shl 6) or
-      (c1.int32 and 0b00111111)
-    if codepoint < 0x80:
-      return
-    return some(Rune(codepoint))
 
-  if (c0 and 0b11110000) == 0b11100000:
-    if i + 2 >= s.len:
-      return
-    let
-      c1 = s[i + 1].uint8
-      c2 = s[i + 2].uint8
-    if (c1 and 0b11000000) != 0b10000000:
-      return
-    if (c2 and 0b11000000) != 0b10000000:
-      return
-    let codepoint =
-      ((c0.int32 and 0b00001111) shl 12) or
-      ((c1.int32 and 0b00111111) shl 6) or
-      (c2.int32 and 0b00111111)
-    if codepoint < 0x800 or Rune(codepoint).isSurrogate():
-      return
-    return some(Rune(codepoint))
+    if (c0 and 0b11100000) == 0b11000000:
+      let codepoint =
+        ((c0.int32 and 0b00011111) shl 6) or
+        (c1.int32 and 0b00111111)
+      if codepoint >= 0x80:
+        return some(Rune(codepoint))
 
-  if (c0 and 0b11111000) == 0b11110000:
-    if i + 3 >= s.len:
-      return
-    let
-      c1 = s[i + 1].uint8
-      c2 = s[i + 2].uint8
-      c3 = s[i + 3].uint8
-    if (c1 and 0b11000000) != 0b10000000:
-      return
-    if (c2 and 0b11000000) != 0b10000000:
-      return
-    if (c3 and 0b11000000) != 0b10000000:
-      return
-    let codepoint =
-      ((c0.int32 and 0b00000111) shl 18) or
-      ((c1.int32 and 0b00111111) shl 12) or
-      ((c2.int32 and 0b00111111) shl 6) or
-      (c3.int32 and 0b00111111)
-    if codepoint < 0xffff or codepoint > utf8Max:
-      return
-    return some(Rune(codepoint))
+    elif readableBytes == 3 and (c0 and 0b11110000) == 0b11100000:
+      let c2 = s[i + 2].uint8
+      if (c2 and 0b11000000) == 0b10000000:
+        let codepoint =
+          ((c0.int32 and 0b00001111) shl 12) or
+          ((c1.int32 and 0b00111111) shl 6) or
+          (c2.int32 and 0b00111111)
+        if codepoint >= 0x800 and not Rune(codepoint).isSurrogate():
+          return some(Rune(codepoint))
 
 proc runeAt*(s: openarray[char]; i: int): Rune =
   let rune = s.validRuneAt(i)

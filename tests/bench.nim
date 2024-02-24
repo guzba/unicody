@@ -13,6 +13,31 @@ block:
       s.unsafeAdd rune
     s.setLen(0)
 
+block:
+  var s: string
+  for i in 0 ..< 100_000:
+    s.add rand(32 .. 126).char
+
+  timeIt "unicody validRuneAt ascii":
+    var i: int
+    while i != s.len:
+      let rune = s.validRuneAt(i)
+      i += rune.get.unsafeSize
+
+block:
+  var s: string
+  for i in 0 ..< 100_000:
+    let rune = Rune(rand(0'i32 .. utf8Max))
+    if rune.isValid:
+      s.unsafeAdd rune
+
+  timeIt "unicody validRuneAt multi-byte":
+    var i: int
+    while i != s.len:
+      let rune = s.validRuneAt(i)
+      i += rune.get.unsafeSize
+
+block:
   var strings: seq[string]
   for i in 0 ..< 10:
     var s: string
