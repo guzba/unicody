@@ -166,7 +166,7 @@ proc validRuneAt*(s: openarray[char], i: int): Option[Rune] =
 
   elif readableBytes >= 4:
     var tmp: uint32
-    copyMem(tmp.addr, s[i].addr, 4)
+    copyMem(tmp.addr, s[i].unsafeAddr, 4)
     let
       b = (tmp and 0b1100000011100000'u32)
       c = (tmp and 0b110000001100000011110000'u32)
@@ -283,7 +283,7 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
 
     elif readableBytes >= 4:
       var tmp: uint32
-      copyMem(tmp.addr, s[i].addr, 4)
+      copyMem(tmp.addr, s[i].unsafeAddr, 4)
       let
         b = (tmp and 0b1100000011100000'u32)
         c = (tmp and 0b110000001100000011110000'u32)
