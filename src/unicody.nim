@@ -1,4 +1,4 @@
-import std/options, std/bitops
+import std/options
 
 when defined(amd64):
   import nimsimd/sse2
@@ -316,7 +316,6 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
         let
           c1 = s[i + 1].uint8
           c2 = s[i + 2].uint8
-          c3 = s[i + 3].uint8
         if (c0 and 0b11100000) == 0b11000000:
           return i + 1
         elif (c0 and 0b11110000) == 0b11100000:
@@ -427,7 +426,7 @@ proc containsControlCharacter*(s: openarray[char]): bool =
             e = vceqq_u8(tmp, vmovq_n_u8(127))
             ce = vorrq_u8(c, e)
             mask = vget_lane_u64(
-              cast[uint64x1](vorr_u8(vget_low_u8(ce), vget_high_u8(ce))),
+              cast[uint64x1](vshrn_n_u16(cast[uint16x8](ce), 4)),
               0
             )
           if mask != 0:
