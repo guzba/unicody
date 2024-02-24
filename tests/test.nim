@@ -49,6 +49,11 @@ const
 
 doAssert Rune(0x0394) == Rune(0x0394)
 
+const a = block:
+  var s: string
+  s.unsafeAdd Rune(32)
+  s
+
 const ct = validateUtf8("0123456789")
 doAssert ct == -1
 
