@@ -1,4 +1,4 @@
-import std/options
+import std/options, std/bitops
 
 when defined(amd64):
   import nimsimd/sse2
@@ -156,7 +156,7 @@ proc validRuneAt*(s: openarray[char], i: int): Option[Rune] =
     return
 
   let c0 = s[i].uint8
-  if (c0 and 0b10000000) == 0:
+  if c0 < 0b10000000:
     return some(Rune(c0))
 
   # Looks multi-byte
@@ -223,7 +223,7 @@ proc runeAt*(s: openarray[char]; i: int): Rune =
 
 proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
   var i: int
-  while i < s.len:
+  while true:
     when nimvm:
       discard
     else:
@@ -231,11 +231,15 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
         discard
       else:
         when defined(amd64):
-          if i + 16 <= s.len:
-            let tmp = mm_loadu_si128(s[i].unsafeAddr)
-            if mm_movemask_epi8(tmp) == 0:
+          while i + 16 <= s.len:
+            let
+              tmp = mm_loadu_si128(s[i].unsafeAddr)
+              mask = mm_movemask_epi8(tmp)
+            if mask == 0:
               i += 16
               continue
+            # i += countTrailingZeroBits(mask) # slow for some reason
+            break
         elif defined(arm64):
           if i + 16 <= s.len:
             let
@@ -250,12 +254,13 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
               continue
         else:
           # Fast path: check if the next 8 bytes are ASCII
-          if i + 8 <= s.len:
+          while i + 8 <= s.len:
             var tmp: uint64
             copyMem(tmp.addr, s[i].unsafeAddr, 8)
             if (tmp and 0x8080808080808080'u64) == 0:
               i += 8
               continue
+            break
 
     # let rune = s.validRuneAt(i)
     # if rune.isSome:
@@ -263,65 +268,100 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
     # else:
     #   return i
 
-    var c0 = s[i].uint8
-    while c0 < 0b10000000:
-      inc i
-      if i == s.len:
-        return -1
-      c0 = s[i].uint8
+    let readableBytes = s.len - i
 
-    if (c0 and 0b11100000) == 0b11000000:
-      if i + 1 >= s.len:
-        return i
+    if readableBytes <= 0:
+      break
+
+    let c0 = s[i].uint8
+    if c0 < 0b10000000:
+      inc i
+      continue
+
+    if readableBytes == 1:
+      return
+
+    elif readableBytes >= 4:
+      var tmp: uint32
+      copyMem(tmp.addr, s[i].addr, 4)
+      let
+        b = (tmp and 0b1100000011100000'u32)
+        c = (tmp and 0b110000001100000011110000'u32)
+        d = (tmp and 0b11000000110000001100000011111000'u32)
+      if b == 0b1000000011000000'u32:
+        let codepoint =
+          ((c0.int32 and 0b00011111) shl 6) or
+          (s[i + 1].int32 and 0b00111111)
+        if codepoint < 0x80:
+          return i
+        i += 2
+      elif c == 0b100000001000000011100000'u32:
+        let codepoint =
+          ((c0.int32 and 0b00001111) shl 12) or
+          ((s[i + 1].int32 and 0b00111111) shl 6) or
+          (s[i + 2].int32 and 0b00111111)
+        if codepoint < 0x800 or Rune(codepoint).isSurrogate():
+          return i
+        i += 3
+      elif d == 0b10000000100000001000000011110000'u32:
+        let codepoint =
+          ((c0.int32 and 0b00000111) shl 18) or
+          ((s[i + 1].int32 and 0b00111111) shl 12) or
+          ((s[i + 2].int32 and 0b00111111) shl 6) or
+          (s[i + 3].int32 and 0b00111111)
+        if codepoint < 0xffff or codepoint > utf8Max:
+          return i
+        i += 4
+      else: # Determine where the bad byte is
+        let
+          c1 = s[i + 1].uint8
+          c2 = s[i + 2].uint8
+          c3 = s[i + 3].uint8
+        if (c0 and 0b11100000) == 0b11000000:
+          return i + 1
+        elif (c0 and 0b11110000) == 0b11100000:
+          if (c1 and 0b11000000) != 0b10000000:
+            return i + 1
+          else:
+            return i + 2
+        elif (c0 and 0b11111000) == 0b11110000:
+          if (c1 and 0b11000000) != 0b10000000:
+            return i + 1
+          elif (c2 and 0b11000000) != 0b10000000:
+            return i + 2
+          else:
+            return i + 3
+        else:
+          return i
+
+    else: # 2 or 3 readable bytes
       let c1 = s[i + 1].uint8
       if (c1 and 0b11000000) != 0b10000000:
         return i + 1
-      let codepoint =
-        ((c0.int32 and 0b00011111) shl 6) or
-        (c1.int32 and 0b00111111)
-      if codepoint < 0x80:
+
+      if (c0 and 0b11100000) == 0b11000000:
+        let codepoint =
+          ((c0.int32 and 0b00011111) shl 6) or
+          (c1.int32 and 0b00111111)
+        if codepoint < 0x80:
+          return i
+        i += 2
+
+      elif readableBytes == 3 and (c0 and 0b11110000) == 0b11100000:
+        let c2 = s[i + 2].uint8
+        if (c2 and 0b11000000) == 0b10000000:
+          let codepoint =
+            ((c0.int32 and 0b00001111) shl 12) or
+            ((c1.int32 and 0b00111111) shl 6) or
+            (c2.int32 and 0b00111111)
+          if codepoint < 0x800 or Rune(codepoint).isSurrogate():
+            return i
+          i += 3
+        else:
+          return i + 2
+
+      else:
         return i
-      i += 2
-    elif (c0 and 0b11110000) == 0b11100000:
-      if i + 2 >= s.len:
-        return i
-      let
-        c1 = s[i + 1].uint8
-        c2 = s[i + 2].uint8
-      if (c1 and 0b11000000) != 0b10000000:
-        return i + 1
-      if (c2 and 0b11000000) != 0b10000000:
-        return i + 2
-      let codepoint =
-        ((c0.int32 and 0b00001111) shl 12) or
-        ((c1.int32 and 0b00111111) shl 6) or
-        (c2.int32 and 0b00111111)
-      if codepoint < 0x800 or Rune(codepoint).isSurrogate():
-        return i
-      i += 3
-    elif (c0 and 0b11111000) == 0b11110000:
-      if i + 3 >= s.len:
-        return i
-      let
-        c1 = s[i + 1].uint8
-        c2 = s[i + 2].uint8
-        c3 = s[i + 3].uint8
-      if (c1 and 0b11000000) != 0b10000000:
-        return i + 1
-      if (c2 and 0b11000000) != 0b10000000:
-        return i + 2
-      if (c3 and 0b11000000) != 0b10000000:
-        return i + 3
-      let codepoint =
-        ((c0.int32 and 0b00000111) shl 18) or
-        ((c1.int32 and 0b00111111) shl 12) or
-        ((c2.int32 and 0b00111111) shl 6) or
-        (c3.int32 and 0b00111111)
-      if codepoint < 0xffff or codepoint > utf8Max:
-        return i
-      i += 4
-    else:
-      return i
 
   # Everything looks good
   return -1

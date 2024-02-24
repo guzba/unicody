@@ -46,20 +46,7 @@ block:
       s.add(c)
     strings.add(s)
 
-  timeIt "unicody validateUtf8":
-    for s in strings:
-      doAssert validateUtf8(s) == -1
-
-block:
-  var strings: seq[string]
-  for i in 0 ..< 10:
-    var s: string
-    for i in 0 ..< 1_000_000:
-      let c = rand(127).char
-      s.add(c)
-    strings.add(s)
-
-  timeIt "unicody validateUtf8":
+  timeIt "unicody validateUtf8 ascii":
     for s in strings:
       doAssert validateUtf8(s) == -1
 
@@ -73,7 +60,7 @@ block:
         s.add(rune)
     strings.add(s)
 
-  timeIt "unicody validateUtf8":
+  timeIt "unicody validateUtf8 multi-byte":
     for s in strings:
       discard validateUtf8(s)
 
