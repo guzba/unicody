@@ -1,24 +1,25 @@
 nimTitle	unicody	unicody.html	module src/unicody		0
-nim	replacementRune	unicody.html#replacementRune	const replacementRune		13
-nim	highSurrogateMin	unicody.html#highSurrogateMin	const highSurrogateMin		14
-nim	highSurrogateMax	unicody.html#highSurrogateMax	const highSurrogateMax		15
-nim	lowSurrogateMin	unicody.html#lowSurrogateMin	const lowSurrogateMin		16
-nim	lowSurrogateMax	unicody.html#lowSurrogateMax	const lowSurrogateMax		17
-nim	`==`	unicody.html#==,Rune,Rune	proc `==`(a, b: Rune): bool		23
-nim	isHighSurrogate	unicody.html#isHighSurrogate,Rune	proc isHighSurrogate(rune: Rune): bool		26
-nim	isLowSurrogate	unicody.html#isLowSurrogate,Rune	proc isLowSurrogate(rune: Rune): bool		29
-nim	isSurrogate	unicody.html#isSurrogate,Rune	proc isSurrogate(rune: Rune): bool		32
-nim	isValid	unicody.html#isValid,Rune	proc isValid(rune: Rune): bool		35
-nim	unsafeSize	unicody.html#unsafeSize,Rune	proc unsafeSize(rune: Rune): int		38
-nim	size	unicody.html#size,Rune	proc size(rune: Rune): int		50
-nim	unsafeAdd	unicody.html#unsafeAdd,string,Rune	proc unsafeAdd(s: var string; rune: Rune)		56
-nim	add	unicody.html#add,string,Rune	proc add(s: var string; rune: Rune)		77
-nim	`$`	unicody.html#$,Rune	proc `$`(rune: Rune): string		83
-nim	toUTF8	unicody.html#toUTF8,Rune	proc toUTF8(rune: Rune): string		86
-nim	`$`	unicody.html#$,seq[Rune]	proc `$`(runes: seq[Rune]): string		89
-nim	validRuneAt	unicody.html#validRuneAt,openArray[char],int	proc validRuneAt(s: openArray[char]; i: int): Option[Rune]		93
-nim	runeAt	unicody.html#runeAt,openArray[char],int	proc runeAt(s: openArray[char]; i: int): Rune		154
-nim	validateUtf8	unicody.html#validateUtf8,openArray[char]	proc validateUtf8(s: openArray[char]): int		160
-nim	truncateUtf8	unicody.html#truncateUtf8,openArray[char],int	proc truncateUtf8(s: openArray[char]; maxBytes: int): string		280
-nim	containsControlCharacter	unicody.html#containsControlCharacter,openArray[char]	proc containsControlCharacter(s: openArray[char]): bool		300
-nimgrp	$	unicody.html#$-procs-all	proc		83
+nim	replacementRune	unicody.html#replacementRune	const replacementRune		33
+nim	highSurrogateMin	unicody.html#highSurrogateMin	const highSurrogateMin		34
+nim	highSurrogateMax	unicody.html#highSurrogateMax	const highSurrogateMax		35
+nim	lowSurrogateMin	unicody.html#lowSurrogateMin	const lowSurrogateMin		36
+nim	lowSurrogateMax	unicody.html#lowSurrogateMax	const lowSurrogateMax		37
+nim	utf8Max	unicody.html#utf8Max	const utf8Max		38
+nim	`==`	unicody.html#==.t,Rune,Rune	template `==`(a, b: Rune): bool		43
+nim	isHighSurrogate	unicody.html#isHighSurrogate.t,Rune	template isHighSurrogate(rune: Rune): bool		46
+nim	isLowSurrogate	unicody.html#isLowSurrogate.t,Rune	template isLowSurrogate(rune: Rune): bool		49
+nim	isSurrogate	unicody.html#isSurrogate.t,Rune	template isSurrogate(rune: Rune): bool		52
+nim	isValid	unicody.html#isValid.t,Rune	template isValid(rune: Rune): bool		55
+nim	unsafeSize	unicody.html#unsafeSize.t,Rune	template unsafeSize(rune: Rune): int		58
+nim	size	unicody.html#size,Rune	proc size(rune: Rune): int		70
+nim	unsafeAdd	unicody.html#unsafeAdd,string,Rune	proc unsafeAdd(s: var string; rune: Rune)		77
+nim	add	unicody.html#add,string,Rune	proc add(s: var string; rune: Rune)		137
+nim	`$`	unicody.html#$,Rune	proc `$`(rune: Rune): string		143
+nim	toUTF8	unicody.html#toUTF8,Rune	proc toUTF8(rune: Rune): string		146
+nim	`$`	unicody.html#$,seq[Rune]	proc `$`(runes: seq[Rune]): string		149
+nim	validRuneAt	unicody.html#validRuneAt,openArray[char],int	proc validRuneAt(s: openArray[char]; i: int): Option[Rune]		153
+nim	runeAt	unicody.html#runeAt,openArray[char],int	proc runeAt(s: openArray[char]; i: int): Rune		218
+nim	validateUtf8	unicody.html#validateUtf8,openArray[char]	proc validateUtf8(s: openArray[char]): int		224
+nim	truncateUtf8	unicody.html#truncateUtf8,openArray[char],int	proc truncateUtf8(s: openArray[char]; maxBytes: int): string		369
+nim	containsControlCharacter	unicody.html#containsControlCharacter,openArray[char]	proc containsControlCharacter(s: openArray[char]): bool		403
+nimgrp	$	unicody.html#$-procs-all	proc		143
