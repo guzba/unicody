@@ -289,7 +289,7 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
       continue
 
     if readableBytes == 1:
-      return
+      return i
 
     elif readableBytes >= 4:
       var tmp: uint32
