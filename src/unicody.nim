@@ -113,18 +113,20 @@ proc unsafeAdd*(s: var string, rune: Rune) =
       p[s.high] = ((rune.uint32 and 0b00111111) or 0b10000000).char
     else:
       s.setLen(s.len + 4)
-      let p = cast[ptr UncheckedArray[char]](s.cstring)
-      var
-        a = ((rune.uint32 shr 18) or 0b11110000)
-        b = ((rune.uint32 shr 12 and 0b00111111) or 0b10000000) shl 8
-        c = ((rune.uint32 shr 6 and 0b00111111) or 0b10000000) shl 16
-        d = ((rune.uint32 and 0b00111111) or (0b10000000)) shl 24
-        tmp = a or b or c or d
-      copyMem(p[s.high - 3].addr, tmp.addr, 4)
-      # p[s.high - 3] = ((rune.uint32 shr 18) or 0b11110000).char
-      # p[s.high - 2] = ((rune.uint32 shr 12 and 0b00111111) or 0b10000000).char
-      # p[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or 0b10000000).char
-      # p[s.high] = ((rune.uint32 and 0b00111111) or (0b10000000)).char
+      when defined(js):
+        s[s.high - 3] = ((rune.uint32 shr 18) or 0b11110000).char
+        s[s.high - 2] = ((rune.uint32 shr 12 and 0b00111111) or 0b10000000).char
+        s[s.high - 1] = ((rune.uint32 shr 6 and 0b00111111) or 0b10000000).char
+        s[s.high] = ((rune.uint32 and 0b00111111) or (0b10000000)).char
+      else:
+        let p = cast[ptr UncheckedArray[char]](s.cstring)
+        var
+          a = ((rune.uint32 shr 18) or 0b11110000)
+          b = ((rune.uint32 shr 12 and 0b00111111) or 0b10000000) shl 8
+          c = ((rune.uint32 shr 6 and 0b00111111) or 0b10000000) shl 16
+          d = ((rune.uint32 and 0b00111111) or (0b10000000)) shl 24
+          tmp = a or b or c or d
+        copyMem(p[s.high - 3].addr, tmp.addr, 4)
 
   when nimvm:
     slow()
@@ -166,7 +168,15 @@ proc validRuneAt*(s: openarray[char], i: int): Option[Rune] =
 
   elif readableBytes >= 4:
     var tmp: uint32
-    copyMem(tmp.addr, s[i].unsafeAddr, 4)
+    when defined(js):
+      let
+        x = s[i + 3].uint32
+        y = s[i + 2].uint32
+        z = s[i + 1].uint32
+        w = s[i + 0].uint32
+      tmp = (x shl 24) or (y shl 16) or (z shl 8) or w
+    else:
+      copyMem(tmp.addr, s[i].unsafeAddr, 4)
     let
       b = (tmp and 0b1100000011100000'u32)
       c = (tmp and 0b110000001100000011110000'u32)
@@ -283,7 +293,15 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
 
     elif readableBytes >= 4:
       var tmp: uint32
-      copyMem(tmp.addr, s[i].unsafeAddr, 4)
+      when defined(js):
+        let
+          x = s[i + 3].uint32
+          y = s[i + 2].uint32
+          z = s[i + 1].uint32
+          w = s[i + 0].uint32
+        tmp = (x shl 24) or (y shl 16) or (z shl 8) or w
+      else:
+        copyMem(tmp.addr, s[i].unsafeAddr, 4)
       let
         b = (tmp and 0b1100000011100000'u32)
         c = (tmp and 0b110000001100000011110000'u32)

@@ -101,9 +101,10 @@ for i in 0 ..< 10:
     i += rune.get.size
   doAssert s2 == s
 
-block:
-  let stressTest = readFile("tests/data/quickbrown.txt")
-  doAssert validateUtf8(stressTest) == -1
+when not defined(js):
+  block:
+    let stressTest = readFile("tests/data/quickbrown.txt")
+    doAssert validateUtf8(stressTest) == -1
 
 block:
   let s = "añyóng:hÃllo;是$example"
