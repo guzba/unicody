@@ -1,4 +1,4 @@
-version     = "0.1.5"
+version     = "0.1.6"
 author      = "Ryan Oldenburg"
 description = "An alternative / companion to std/unicode."
 license     = "MIT"

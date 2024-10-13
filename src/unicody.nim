@@ -252,14 +252,8 @@ proc validateUtf8*(s: openarray[char]): int {.raises: [].} =
             break
         elif defined(arm64):
           if i + 16 <= s.len:
-            let
-              tmp = vld1q_u8(s[i].unsafeAddr)
-              cmp = vandq_u8(tmp, vmovq_n_u8(128))
-              mask = vget_lane_u64(
-                cast[uint64x1](vorr_u8(vget_low_u8(cmp), vget_high_u8(cmp))),
-                0
-              )
-            if mask == 0:
+            let tmp = vld1q_u8(s[i].unsafeAddr)
+            if vmaxvq_u8(vandq_u8(tmp, vmovq_n_u8(128))) == 0:
               i += 16
               continue
         else:
@@ -443,11 +437,7 @@ proc containsControlCharacter*(s: openarray[char]): bool =
             c = vcltq_u8(tmp, vmovq_n_u8(32))
             e = vceqq_u8(tmp, vmovq_n_u8(127))
             ce = vorrq_u8(c, e)
-            mask = vget_lane_u64(
-              cast[uint64x1](vshrn_n_u16(cast[uint16x8](ce), 4)),
-              0
-            )
-          if mask != 0:
+          if vmaxvq_u8(ce) != 0:
             return true
           i += 16
 
