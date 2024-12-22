@@ -124,10 +124,10 @@ block:
       s.add(c)
     needles.add(s)
 
-  timeIt "unicody find":
+  timeIt "unicody find substring":
     for i in 0 ..< 10:
       doAssert strings[i].find(needles[i]) < strings[i].len
 
-  # timeIt "strutils find":
+  # timeIt "strutils find substring":
   #   for i in 0 ..< 10:
   #     doassert strutils.find(strings[i], needles[i]) < strings[i].len
