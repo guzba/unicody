@@ -149,3 +149,7 @@ block:
       s.add rand(32 .. 126).char
     s[rand(len - 1)] = rand(31).char
     doAssert containsControlCharacter(s)
+
+block:
+  let s = "some string goes here"
+  doAssert s.find('s', start = 1) == 5

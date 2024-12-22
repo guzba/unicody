@@ -1,4 +1,4 @@
-import std/options
+import std/options, std/bitops
 
 when defined(amd64):
   import nimsimd/sse2
@@ -40,6 +40,42 @@ const
 when defined(release):
   {.push checks: off.}
 
+proc find*(s: openarray[char], target: char, start = 0): int =
+  var i = start
+  when nimvm:
+    discard
+  else:
+    when defined(js):
+      discard
+    else:
+      when defined(amd64):
+        let vecTarget = mm_set1_epi8(cast[int8](target))
+        while i + 16 <= s.len:
+          let
+            tmp = mm_loadu_si128(s[i].unsafeAddr)
+            eq = mm_cmpeq_epi8(vecTarget, tmp)
+            mask = mm_movemask_epi8(eq)
+          if mask != 0:
+            return i + countTrailingZeroBits(mask)
+          i += 16
+      elif defined(arm64):
+        while i + 16 <= s.len:
+          let
+            v0 = vld1q_u8(s[i].unsafeAddr)
+            v1 = vceqq_u8(v0, vmovq_n_u8(cast[uint8](target)))
+            v2 = vshrn_n_u16(vreinterpretq_u16_u8(v1), 4)
+            v3 = vget_lane_u64(vreinterpret_u64_u8(v2), 0)
+          if v3 != 0:
+            return i + countTrailingZeroBits(v3) div 4
+          i += 16
+
+  while i < s.len:
+    if s[i] == target:
+      return i
+    inc i
+
+  return -1
+
 template `==`*(a, b: Rune): bool =
   a.int32 == b.int32
 
@@ -73,10 +109,10 @@ proc size*(rune: Rune): int =
     raise newException(CatchableError, "Invalid rune")
   rune.unsafeSize()
 
-when defined(nimHasQuirky):
-  proc unsafeAdd*(s: var string, rune: Rune) {.quirky.}
-else:
-  proc unsafeAdd*(s: var string, rune: Rune)
+# when defined(nimHasQuirky):
+#   proc unsafeAdd*(s: var string, rune: Rune) {.quirky.}
+# else:
+#   proc unsafeAdd*(s: var string, rune: Rune)
 
 proc unsafeAdd*(s: var string, rune: Rune) =
   ## Adds the rune to the string without checking if the rune is valid.
