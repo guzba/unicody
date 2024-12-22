@@ -40,8 +40,10 @@ const
 when defined(release):
   {.push checks: off.}
 
-proc find*(s: openarray[char], needle: char, start = 0): int =
+proc find*(s: openarray[char], needle: char, start = 0, last = -1): int =
+  let last = if last < 0: s.high else: min(last, s.high)
   var i = start
+
   when nimvm:
     discard
   else:
@@ -50,7 +52,7 @@ proc find*(s: openarray[char], needle: char, start = 0): int =
     else:
       when defined(amd64):
         let vecTarget = mm_set1_epi8(needle)
-        while i + 16 <= s.len:
+        while i + 16 <= last + 1:
           let
             tmp = mm_loadu_si128(s[i].unsafeAddr)
             eq = mm_cmpeq_epi8(vecTarget, tmp)
@@ -59,7 +61,7 @@ proc find*(s: openarray[char], needle: char, start = 0): int =
             return i + countTrailingZeroBits(mask)
           i += 16
       elif defined(arm64):
-        while i + 16 <= s.len:
+        while i + 16 <= last + 1:
           let
             v0 = vld1q_u8(s[i].unsafeAddr)
             v1 = vceqq_u8(v0, vmovq_n_u8(cast[uint8](needle)))
@@ -69,18 +71,17 @@ proc find*(s: openarray[char], needle: char, start = 0): int =
             return i + countTrailingZeroBits(v3) div 4
           i += 16
 
-  while i < s.len:
+  for i in start .. last:
     if s[i] == needle:
       return i
-    inc i
 
   return -1
 
-proc find*(s: openarray[char], needle: string, start = 0): int =
+proc find*(s: openarray[char], needle: string, start = 0, last = -1): int =
   if needle == "":
     return 0
   elif needle.len == 1:
-    return s.find(needle[0], start)
+    return s.find(needle[0], start, last)
   elif needle.len > s.len:
     return -1
 
@@ -94,14 +95,15 @@ proc find*(s: openarray[char], needle: string, start = 0): int =
   for i in 0 ..< needle.len - 1:
     tbl[needle[i].int] = needle.len - 1 - i
 
+  let last = if last < 0: s.high else: min(last, s.high)
   var skip = start
-  while s.len - skip >= needle.len:
+  while last - skip >= needle.high:
     var i = needle.high
     while s[skip + i] == needle[i]:
       if i == 0:
         return skip
       dec i
-    inc skip, tbl[s[skip + needle.len - 1].int]
+    inc skip, tbl[s[skip + needle.high].int]
 
   return -1
 

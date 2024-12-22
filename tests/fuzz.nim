@@ -58,3 +58,10 @@ for i in 0 ..< 100_000:
     except CatchableError:
       discard
     s[pos] = oldValue
+
+for i in 0 ..< 10_000:
+  var s: string
+  for i in 0 ..< 1 + rand(500):
+    s.add rand(255).char
+
+  doAssert s.find("asdf") < s.len
