@@ -49,7 +49,7 @@ proc find*(s: openarray[char], target: char, start = 0): int =
       discard
     else:
       when defined(amd64):
-        let vecTarget = mm_set1_epi8(cast[int8](target))
+        let vecTarget = mm_set1_epi8(target)
         while i + 16 <= s.len:
           let
             tmp = mm_loadu_si128(s[i].unsafeAddr)
