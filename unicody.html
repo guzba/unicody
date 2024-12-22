@@ -83,8 +83,8 @@
 
 </ul>
 <ul class="simple nested-toc-section">find
-  <li><a class="reference" href="#find%2CopenArray%5Bchar%5D%2Cchar%2Cint" title="find(s: openArray[char]; needle: char; start = 0): int">find(s: openArray[char]; needle: char; start = 0): int</a></li>
-<li><a class="reference" href="#find%2CopenArray%5Bchar%5D%2Cstring%2Cint" title="find(s: openArray[char]; needle: string; start = 0): int">find(s: openArray[char]; needle: string; start = 0): int</a></li>
+  <li><a class="reference" href="#find%2CopenArray%5Bchar%5D%2Cchar%2Cint%2Cint" title="find(s: openArray[char]; needle: char; start = 0; last = -1): int">find(s: openArray[char]; needle: char; start = 0; last = -1): int</a></li>
+<li><a class="reference" href="#find%2CopenArray%5Bchar%5D%2Cstring%2Cint%2Cint" title="find(s: openArray[char]; needle: string; start = 0; last = -1): int">find(s: openArray[char]; needle: string; start = 0; last = -1): int</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">runeAt
@@ -238,8 +238,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L210" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L210" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L212" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L212" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -249,8 +249,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L216" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L216" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L218" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L218" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -263,8 +263,8 @@
   <dd>
     
     Adds the rune to the string.
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L204" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L204" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L206" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L206" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -277,17 +277,17 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L479" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L479" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L481" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L481" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 
 </div>
 <div id="find-procs-all">
-  <div id="find,openArray[char],char,int">
-  <dt><pre><span class="Keyword">proc</span> <a href="#find%2CopenArray%5Bchar%5D%2Cchar%2Cint"><span class="Identifier">find</span></a><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">char</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">needle</span><span class="Other">:</span> <span class="Identifier">char</span><span class="Other">;</span> <span class="Identifier">start</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <div id="find,openArray[char],char,int,int">
+  <dt><pre><span class="Keyword">proc</span> <a href="#find%2CopenArray%5Bchar%5D%2Cchar%2Cint%2Cint"><span class="Identifier">find</span></a><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">char</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">needle</span><span class="Other">:</span> <span class="Identifier">char</span><span class="Other">;</span> <span class="Identifier">start</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">;</span> <span class="Identifier">last</span> <span class="Other">=</span> <span class="DecNumber">-1</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
@@ -296,14 +296,14 @@
 
   </dd>
 </div>
-<div id="find,openArray[char],string,int">
-  <dt><pre><span class="Keyword">proc</span> <a href="#find%2CopenArray%5Bchar%5D%2Cstring%2Cint"><span class="Identifier">find</span></a><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">char</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">needle</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">start</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="find,openArray[char],string,int,int">
+  <dt><pre><span class="Keyword">proc</span> <a href="#find%2CopenArray%5Bchar%5D%2Cstring%2Cint%2Cint"><span class="Identifier">find</span></a><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">char</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">needle</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">start</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">;</span> <span class="Identifier">last</span> <span class="Other">=</span> <span class="DecNumber">-1</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L79" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L79" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L80" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L80" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -316,8 +316,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L293" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L293" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L295" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L295" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -329,8 +329,8 @@
   <dd>
     
     Returns the number of bytes the rune takes.
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L135" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L135" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L137" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L137" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -343,8 +343,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L213" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L213" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L215" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L215" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -357,8 +357,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L445" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L445" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L447" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L447" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -370,8 +370,8 @@
   <dd>
     
     Adds the rune to the string without checking if the rune is valid.
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L146" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L146" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L148" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L148" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -383,8 +383,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L299" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L299" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L301" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L301" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -397,8 +397,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L220" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L220" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L222" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L222" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -416,8 +416,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L108" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L108" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L110" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L110" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -429,8 +429,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L111" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L111" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L113" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L113" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -442,8 +442,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L114" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L114" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L116" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L116" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -455,8 +455,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L117" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L117" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L119" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L119" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -468,8 +468,8 @@
   <dd>
     
     
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L120" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L120" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L122" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L122" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -481,8 +481,8 @@
   <dd>
     
     Returns the number of bytes the rune takes without checking if the rune is valid.
-    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L123" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L123" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/guzba/unicody/tree/master/src/unicody.nim#L125" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/guzba/unicody/edit/devel/src/unicody.nim#L125" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -498,7 +498,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-12-22 07:33:25 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-12-22 08:13:15 UTC</small>
       </div>
     </div>
   </div>
