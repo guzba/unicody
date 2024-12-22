@@ -1,5 +1,7 @@
 import benchy, random, unicody
 
+# from std/strutils import nil
+
 randomize()
 
 block:
@@ -104,3 +106,28 @@ block:
   # timeIt "unicody findControlCharacter != -1":
   #   for s in strings:
   #     doAssert findControlCharacter(s) != -1
+
+block:
+  var strings: seq[string]
+  for i in 0 ..< 10:
+    var s: string
+    for i in 0 ..< 1_000_000:
+      let c = rand(32 .. 126).char
+      s.add(c)
+    strings.add(s)
+
+  var needles: seq[string]
+  for i in 0 ..< 10:
+    var s: string
+    for i in 0 ..< 100:
+      let c = rand(32 .. 126).char
+      s.add(c)
+    needles.add(s)
+
+  timeIt "unicody find":
+    for i in 0 ..< 10:
+      doAssert strings[i].find(needles[i]) < strings[i].len
+
+  # timeIt "strutils find":
+  #   for i in 0 ..< 10:
+  #     doassert strutils.find(strings[i], needles[i]) < strings[i].len

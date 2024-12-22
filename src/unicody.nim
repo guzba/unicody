@@ -40,7 +40,7 @@ const
 when defined(release):
   {.push checks: off.}
 
-proc find*(s: openarray[char], target: char, start = 0): int =
+proc find*(s: openarray[char], needle: char, start = 0): int =
   var i = start
   when nimvm:
     discard
@@ -49,7 +49,7 @@ proc find*(s: openarray[char], target: char, start = 0): int =
       discard
     else:
       when defined(amd64):
-        let vecTarget = mm_set1_epi8(target)
+        let vecTarget = mm_set1_epi8(needle)
         while i + 16 <= s.len:
           let
             tmp = mm_loadu_si128(s[i].unsafeAddr)
@@ -62,7 +62,7 @@ proc find*(s: openarray[char], target: char, start = 0): int =
         while i + 16 <= s.len:
           let
             v0 = vld1q_u8(s[i].unsafeAddr)
-            v1 = vceqq_u8(v0, vmovq_n_u8(cast[uint8](target)))
+            v1 = vceqq_u8(v0, vmovq_n_u8(cast[uint8](needle)))
             v2 = vshrn_n_u16(vreinterpretq_u16_u8(v1), 4)
             v3 = vget_lane_u64(vreinterpret_u64_u8(v2), 0)
           if v3 != 0:
@@ -70,9 +70,38 @@ proc find*(s: openarray[char], target: char, start = 0): int =
           i += 16
 
   while i < s.len:
-    if s[i] == target:
+    if s[i] == needle:
       return i
     inc i
+
+  return -1
+
+proc find*(s: openarray[char], needle: string, start = 0): int =
+  if needle == "":
+    return 0
+  elif needle.len == 1:
+    return s.find(needle[0], start)
+  elif needle.len > s.len:
+    return -1
+
+  # https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore%E2%80%93Horspool_algorithm
+
+  var tbl: array[256, int]
+
+  for n in tbl.mitems:
+    n = needle.len
+
+  for i in 0 ..< needle.len - 1:
+    tbl[needle[i].int] = needle.len - 1 - i
+
+  var skip = start
+  while s.len - skip >= needle.len:
+    var i = needle.high
+    while s[skip + i] == needle[i]:
+      if i == 0:
+        return skip
+      dec i
+    inc skip, tbl[s[skip + needle.len - 1].int]
 
   return -1
 
