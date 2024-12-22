@@ -153,3 +153,16 @@ block:
 block:
   let s = "some string goes here"
   doAssert s.find('s', start = 1) == 5
+
+  doAssert "a".find("") == 0
+  doAssert "a".find("a") == 0
+  doAssert "a".find("ab") == -1
+
+  doAssert "abc".find("c") == 2
+  doAssert "abc".find("bc") == 1
+  doAssert "abc".find("abc") == 0
+
+  doAssert "abcdefghijklmnopqrstuvwxyz".find("yz") == 24
+  doAssert "abcdefghijklmnopqrstuvwxyz".find("abcdefghijklmnopqrstuvwxy") == 0
+  doAssert "abcdefghijklmnopqrstuvwxyz".find("bcdefghijklmnopqrstuvwxyz") == 1
+  doAssert "abcdefghijklmnopqrstuvwxyz".find("fghijk") == 5
