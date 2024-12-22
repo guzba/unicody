@@ -166,3 +166,8 @@ block:
   doAssert "abcdefghijklmnopqrstuvwxyz".find("abcdefghijklmnopqrstuvwxy") == 0
   doAssert "abcdefghijklmnopqrstuvwxyz".find("bcdefghijklmnopqrstuvwxyz") == 1
   doAssert "abcdefghijklmnopqrstuvwxyz".find("fghijk") == 5
+
+  doAssert "ab".find("b", start = 100) == -1
+
+  doAssert "ab".find("b", last = 0) == -1
+  doAssert "ab".find("b", start = 1, last = 0) == -1
