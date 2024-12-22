@@ -5,22 +5,24 @@ nim	highSurrogateMax	unicody.html#highSurrogateMax	const highSurrogateMax		35
 nim	lowSurrogateMin	unicody.html#lowSurrogateMin	const lowSurrogateMin		36
 nim	lowSurrogateMax	unicody.html#lowSurrogateMax	const lowSurrogateMax		37
 nim	utf8Max	unicody.html#utf8Max	const utf8Max		38
-nim	find	unicody.html#find,openArray[char],char,int	proc find(s: openArray[char]; target: char; start = 0): int		43
-nim	`==`	unicody.html#==.t,Rune,Rune	template `==`(a, b: Rune): bool		79
-nim	isHighSurrogate	unicody.html#isHighSurrogate.t,Rune	template isHighSurrogate(rune: Rune): bool		82
-nim	isLowSurrogate	unicody.html#isLowSurrogate.t,Rune	template isLowSurrogate(rune: Rune): bool		85
-nim	isSurrogate	unicody.html#isSurrogate.t,Rune	template isSurrogate(rune: Rune): bool		88
-nim	isValid	unicody.html#isValid.t,Rune	template isValid(rune: Rune): bool		91
-nim	unsafeSize	unicody.html#unsafeSize.t,Rune	template unsafeSize(rune: Rune): int		94
-nim	size	unicody.html#size,Rune	proc size(rune: Rune): int		106
-nim	unsafeAdd	unicody.html#unsafeAdd,string,Rune	proc unsafeAdd(s: var string; rune: Rune)		117
-nim	add	unicody.html#add,string,Rune	proc add(s: var string; rune: Rune)		175
-nim	`$`	unicody.html#$,Rune	proc `$`(rune: Rune): string		181
-nim	toUTF8	unicody.html#toUTF8,Rune	proc toUTF8(rune: Rune): string		184
-nim	`$`	unicody.html#$,seq[Rune]	proc `$`(runes: seq[Rune]): string		187
-nim	validRuneAt	unicody.html#validRuneAt,openArray[char],int	proc validRuneAt(s: openArray[char]; i: int): Option[Rune]		191
-nim	runeAt	unicody.html#runeAt,openArray[char],int	proc runeAt(s: openArray[char]; i: int): Rune		264
-nim	validateUtf8	unicody.html#validateUtf8,openArray[char]	proc validateUtf8(s: openArray[char]): int		270
-nim	truncateUtf8	unicody.html#truncateUtf8,openArray[char],int	proc truncateUtf8(s: openArray[char]; maxBytes: int): string		416
-nim	containsControlCharacter	unicody.html#containsControlCharacter,openArray[char]	proc containsControlCharacter(s: openArray[char]): bool		450
-nimgrp	$	unicody.html#$-procs-all	proc		181
+nim	find	unicody.html#find,openArray[char],char,int	proc find(s: openArray[char]; needle: char; start = 0): int		43
+nim	find	unicody.html#find,openArray[char],string,int	proc find(s: openArray[char]; needle: string; start = 0): int		79
+nim	`==`	unicody.html#==.t,Rune,Rune	template `==`(a, b: Rune): bool		108
+nim	isHighSurrogate	unicody.html#isHighSurrogate.t,Rune	template isHighSurrogate(rune: Rune): bool		111
+nim	isLowSurrogate	unicody.html#isLowSurrogate.t,Rune	template isLowSurrogate(rune: Rune): bool		114
+nim	isSurrogate	unicody.html#isSurrogate.t,Rune	template isSurrogate(rune: Rune): bool		117
+nim	isValid	unicody.html#isValid.t,Rune	template isValid(rune: Rune): bool		120
+nim	unsafeSize	unicody.html#unsafeSize.t,Rune	template unsafeSize(rune: Rune): int		123
+nim	size	unicody.html#size,Rune	proc size(rune: Rune): int		135
+nim	unsafeAdd	unicody.html#unsafeAdd,string,Rune	proc unsafeAdd(s: var string; rune: Rune)		146
+nim	add	unicody.html#add,string,Rune	proc add(s: var string; rune: Rune)		204
+nim	`$`	unicody.html#$,Rune	proc `$`(rune: Rune): string		210
+nim	toUTF8	unicody.html#toUTF8,Rune	proc toUTF8(rune: Rune): string		213
+nim	`$`	unicody.html#$,seq[Rune]	proc `$`(runes: seq[Rune]): string		216
+nim	validRuneAt	unicody.html#validRuneAt,openArray[char],int	proc validRuneAt(s: openArray[char]; i: int): Option[Rune]		220
+nim	runeAt	unicody.html#runeAt,openArray[char],int	proc runeAt(s: openArray[char]; i: int): Rune		293
+nim	validateUtf8	unicody.html#validateUtf8,openArray[char]	proc validateUtf8(s: openArray[char]): int		299
+nim	truncateUtf8	unicody.html#truncateUtf8,openArray[char],int	proc truncateUtf8(s: openArray[char]; maxBytes: int): string		445
+nim	containsControlCharacter	unicody.html#containsControlCharacter,openArray[char]	proc containsControlCharacter(s: openArray[char]): bool		479
+nimgrp	$	unicody.html#$-procs-all	proc		210
+nimgrp	find	unicody.html#find-procs-all	proc		43
